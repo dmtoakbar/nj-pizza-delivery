@@ -1,0 +1,95 @@
+import 'package:nj_pizza_delivery/app/home/pizaa/model/pizza_slide_model.dart';
+import 'package:nj_pizza_delivery/constants/images_files.dart';
+
+class PizzaData {
+  static const List<PizzaSlideModel> pizzas = [
+    PizzaSlideModel(
+      id: 1,
+      tagDescription: 'Tasty Pizza fast delivery',
+      tag: 'Spicy',
+      name: 'Margherita',
+      price: 12.0,
+      image: ImagesFiles.fullPizza,
+    ),
+    PizzaSlideModel(
+      id: 2,
+      tagDescription: 'Tasty and Hot Pizza fast delivery',
+      tag: 'Chilly',
+      name: 'Pepperoni',
+      price: 14.0,
+      image: ImagesFiles.fullPizza,
+    ),
+    PizzaSlideModel(
+      id: 3,
+      tagDescription: 'Tasty Pizza fast delivery',
+      tag: 'Yummy',
+      name: 'BBQ Chicken',
+      price: 16.0,
+      image: ImagesFiles.fullPizza,
+    ),
+    PizzaSlideModel(
+      id: 4,
+      tagDescription: 'Tasty and Hot Pizza fast delivery',
+      tag: 'Chilly',
+      name: 'Veggie Supreme',
+      price: 13.5,
+      image: ImagesFiles.fullPizza,
+    ),
+    PizzaSlideModel(
+      id: 5,
+      tagDescription: 'Tasty Pizza fast delivery',
+      tag: 'Yummy',
+      name: 'Hawaiian',
+      price: 15.0,
+      image: ImagesFiles.fullPizza,
+    ),
+    PizzaSlideModel(
+      id: 6,
+      tagDescription: 'Tasty and Hot Pizza fast delivery',
+      tag: 'Tasty',
+      name: 'Mexican Green Wave',
+      price: 14.5,
+      image: ImagesFiles.fullPizza,
+    ),
+    PizzaSlideModel(
+      id: 7,
+      tagDescription: 'Tasty Pizza fast delivery',
+      tag: 'Yummy',
+      name: 'Four Cheese',
+      price: 17.0,
+      image: ImagesFiles.fullPizza,
+    ),
+    PizzaSlideModel(
+      id: 8,
+      tagDescription: 'Tasty and Hot  Pizza fast delivery',
+      tag: 'Spicy',
+      name: 'Paneer Tikka',
+      price: 15.5,
+      image: ImagesFiles.fullPizza,
+    ),
+    PizzaSlideModel(
+      id: 9,
+      tagDescription: 'Tasty and Hot Pizza fast delivery',
+      tag: 'Chilly',
+      name: 'Spicy Sausage',
+      price: 16.5,
+      image: ImagesFiles.fullPizza,
+    ),
+    PizzaSlideModel(
+      id: 10,
+      tagDescription: 'Tasty Pizza fast delivery',
+      tag: 'Spicy',
+      name: 'Classic Italian',
+      price: 18.0,
+      image: ImagesFiles.fullPizza,
+    ),
+    PizzaSlideModel(
+      id: 11,
+      tagDescription: 'Tasty and Hot Pizza fast delivery',
+      tag: 'Pura',
+      name: 'New Orlean Pizza true',
+      price: 20.0,
+      image: ImagesFiles.fullPizza,
+    ),
+  ];
+}
