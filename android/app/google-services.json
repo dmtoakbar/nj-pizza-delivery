@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "322542231420",
+    "project_id": "nj-pizza-delivery",
+    "storage_bucket": "nj-pizza-delivery.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322542231420:android:66d1518429806b9e65cef9",
+        "android_client_info": {
+          "package_name": "com.example.nj_pizza_delivery"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-14DDDXgWjCNk7agwM2mma0G0GTPqHvY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

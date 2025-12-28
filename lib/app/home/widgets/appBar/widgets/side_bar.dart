@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:nj_pizza_delivery/app/home/profile/controller/profile_controller.dart';
 import 'package:nj_pizza_delivery/routes/app_routes.dart';
+import 'package:nj_pizza_delivery/utils/auth_service.dart';
 
 class SideMenuWidget extends StatelessWidget {
+  final ProfileController controller = Get.find<ProfileController>();
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -29,50 +32,57 @@ class SideMenuWidget extends StatelessWidget {
           SizedBox(height: 5),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Icon(Icons.person, size: 70, color: Colors.white),
-                SizedBox(width: 12),
+            child: Obx(() {
+              if (controller.isProfileLoading.value) {
+                return Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                );
+              }
 
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Get.toNamed(Routes.PROFILE);
-                        },
-                        child: Row(
-                          children: [
-                            Text(
-                              'Json Jone',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
+              return Row(
+                children: [
+                  Icon(Icons.person, size: 70, color: Colors.white),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Get.toNamed(Routes.PROFILE);
+                          },
+                          child: Row(
+                            children: [
+                              Text(
+                                controller.nameController.text,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 4),
-                            Icon(
-                              Icons.edit_outlined,
-                              size: 20,
-                              color: Colors.white,
-                            ),
-                          ],
+                              SizedBox(width: 4),
+                              Icon(
+                                Icons.edit_outlined,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Text(
-                        '+918976543210',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: Colors.white,
+                        Text(
+                          controller.phoneController.text,
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              );
+            }),
           ),
 
           Expanded(
@@ -80,6 +90,21 @@ class SideMenuWidget extends StatelessWidget {
               padding: EdgeInsets.zero,
               children: [
                 SizedBox(height: 14),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Divider(color: Colors.white),
+                ),
+
+                GestureDetector(
+                  onTap: () {
+                    {
+                      Navigator.of(context).pop();
+                      Get.until((route) => route.settings.name == Routes.HOME);
+                    }
+                  },
+                  child: _menuItem(Icons.home, 'Home'),
+                ),
+
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Divider(color: Colors.white),
@@ -125,7 +150,7 @@ class SideMenuWidget extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    // await UniversalFunction.logout();
+                    await AuthService.logout();
                   },
                   child: _menuItem(Icons.logout, 'Logout'),
                 ),

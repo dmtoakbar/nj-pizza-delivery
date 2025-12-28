@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nj_pizza_delivery/app/home/pizaa/controller/pizza_packing_controller.dart';
 import 'package:nj_pizza_delivery/app/home/pizaa/controller/pizza_slider_controller.dart';
+import 'package:nj_pizza_delivery/app/home/pizaa/widget/pizza_packing_widget.dart';
 import 'package:nj_pizza_delivery/constants/images_files.dart';
 import 'package:nj_pizza_delivery/routes/app_routes.dart';
 
@@ -10,6 +12,7 @@ class PizzaSlideEffect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ctrl = Get.find<PizzaSliderController>();
+    final pizzaPacking = Get.find<PizzaPackingAnimationController>();
 
     return GestureDetector(
       onHorizontalDragEnd: (details) {
@@ -24,20 +27,27 @@ class PizzaSlideEffect extends StatelessWidget {
         child: Obx(() {
           return Stack(
             alignment: Alignment.center,
+            clipBehavior:
+                pizzaPacking.isVisible.value ? Clip.none : Clip.hardEdge,
             children: [
+              PizzaPackingAnimationWidget(),
               // Plate behind
-              Transform.rotate(
-                angle: ctrl.plateRotation.value, // radians
-                child: ClipRect(
-                  child: Align(
-                    alignment: Alignment.center,
-                    heightFactor: .60, // 👈 keeps 50% height (vertical clip)
-                    child: Transform.rotate(
-                      angle: ctrl.plateRotation.value,
-                      child: Image.asset(
-                        ImagesFiles.plateWithIngredient,
-                        width: 400,
-                        height: 400,
+              IgnorePointer(
+                ignoring: pizzaPacking.isVisible.value,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 150),
+                  opacity: pizzaPacking.isVisible.value ? 0 : 1,
+                  child: Transform.rotate(
+                    angle: ctrl.plateRotation.value,
+                    child: ClipRect(
+                      child: Align(
+                        alignment: Alignment.center,
+                        heightFactor: 0.60,
+                        child: Image.asset(
+                          ImagesFiles.plateWithIngredient,
+                          width: 400,
+                          height: 400,
+                        ),
                       ),
                     ),
                   ),
@@ -58,19 +68,26 @@ class PizzaSlideEffect extends StatelessWidget {
                   )
                   : SizedBox.shrink(),
               // ⭐ Animated pizza (reactive)
-              SlideTransition(
-                position: ctrl.slideAnimation,
-                child: GestureDetector(
-                  onTap: () {
-                    Get.toNamed(
-                      Routes.NEWORDERPIZZA,
-                      arguments: {'pizzaId': ctrl.currentPizzaModel.id},
-                    );
-                  },
-                  child: Image.asset(
-                    ctrl.currentPizzaModel.image,
-                    width: 230,
-                    height: 230,
+              IgnorePointer(
+                ignoring: pizzaPacking.isCloseBoxShowing.value,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 150),
+                  opacity: pizzaPacking.isCloseBoxShowing.value ? 0 : 1,
+                  child: SlideTransition(
+                    position: ctrl.slideAnimation,
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.toNamed(
+                          Routes.NEWORDERPIZZA,
+                          arguments: {'pizzaId': ctrl.currentPizzaModel.id},
+                        );
+                      },
+                      child: Image.asset(
+                        ctrl.currentPizzaModel.image,
+                        width: 230,
+                        height: 230,
+                      ),
+                    ),
                   ),
                 ),
               ),

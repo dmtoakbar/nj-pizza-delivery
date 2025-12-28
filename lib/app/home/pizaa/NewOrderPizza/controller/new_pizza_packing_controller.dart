@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nj_pizza_delivery/app/home/pizaa/NewOrderPizza/controller/new_pizza_order.dart';
 import 'package:nj_pizza_delivery/constants/images_files.dart';
 
-class PizzaPackingAnimationController extends GetxController
+class NewPizzaPackingAnimationController extends GetxController
     with GetSingleTickerProviderStateMixin {
 
+  late Worker _closeBoxWorker;
 
   late AnimationController controller;
 
-  var boxInitialPosition = -100.0.obs;
+  var boxInitialPosition = -20.0.obs;
 
   RxBool isCloseBoxShowing = false.obs;
 
@@ -25,6 +27,7 @@ class PizzaPackingAnimationController extends GetxController
   void onInit() {
     super.onInit();
 
+
     controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
@@ -39,6 +42,12 @@ class PizzaPackingAnimationController extends GetxController
       begin: Offset.zero,
       end: const Offset(1.4, -1.4), // move to top-right
     ).animate(CurvedAnimation(parent: controller, curve: Curves.easeIn));
+
+    _closeBoxWorker = ever(isCloseBoxShowing, (bool closed) {
+      if (closed && Get.isRegistered<NewPizzaOrderController>()) {
+        Get.find<NewPizzaOrderController>().resetToppings();
+      }
+    });
   }
 
   Future<void> startPackingAnimation() async {
@@ -70,6 +79,7 @@ class PizzaPackingAnimationController extends GetxController
 
   @override
   void onClose() {
+    _closeBoxWorker.dispose();
     controller.dispose();
     super.onClose();
   }

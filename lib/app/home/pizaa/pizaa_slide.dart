@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nj_pizza_delivery/app/home/cart/controller/cart_controller.dart';
+import 'package:nj_pizza_delivery/app/home/cart/model/cart_item.dart';
 import 'package:nj_pizza_delivery/app/home/pizaa/controller/pizza_packing_controller.dart';
 import 'package:nj_pizza_delivery/app/home/pizaa/controller/pizza_slider_controller.dart';
 import 'package:nj_pizza_delivery/app/home/pizaa/widget/pizza_slide_widget.dart';
@@ -11,9 +13,11 @@ class PizzaSliderView extends GetView<PizzaSliderController> {
   PizzaSliderView({super.key});
 
   final pizzaPacking = Get.put(
-    PizzaPackingAnimationController(extraAddOnePage: false),
+    PizzaPackingAnimationController(),
     permanent: false,
   );
+
+  final cart = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +36,19 @@ class PizzaSliderView extends GetView<PizzaSliderController> {
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(
-                    controller.currentPizzaModel.tagDescription,
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                  child: IgnorePointer(
+                    ignoring: pizzaPacking.isVisible.value,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 150),
+                      opacity: pizzaPacking.isVisible.value ? 0 : 1,
+                      child: Text(
+                        controller.currentPizzaModel.tagDescription,
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -49,16 +60,25 @@ class PizzaSliderView extends GetView<PizzaSliderController> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: ElevatedButton(
-                    onPressed: null,
-                    style: const ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(Colors.orange),
-                    ),
-                    child: Text(
-                      controller.currentPizzaModel.tag,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
+                  child: IgnorePointer(
+                    ignoring: pizzaPacking.isVisible.value,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 150),
+                      opacity: pizzaPacking.isVisible.value ? 0 : 1,
+                      child: ElevatedButton(
+                        onPressed: null,
+                        style: const ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(
+                            Colors.orange,
+                          ),
+                        ),
+                        child: Text(
+                          controller.currentPizzaModel.tag,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -77,6 +97,7 @@ class PizzaSliderView extends GetView<PizzaSliderController> {
                     opacity: controller.rowOpacity,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset(ImagesFiles.left, height: 100),
                         Image.asset(ImagesFiles.right, height: 100),
@@ -176,7 +197,16 @@ class PizzaSliderView extends GetView<PizzaSliderController> {
                 color: Colors.white,
                 size: 32,
               ),
-              onPressed: () {},
+              onPressed: () async {
+                await pizzaPacking.startPackingAnimation();
+                cart.addItem(
+                  CartItem(
+                    name: controller.currentPizzaModel.name,
+                    image: controller.currentPizzaModel.image,
+                    price: controller.currentPizzaModel.price,
+                  ),
+                );
+              },
             ),
           ),
         ),

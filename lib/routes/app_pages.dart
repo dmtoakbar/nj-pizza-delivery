@@ -8,12 +8,12 @@ import 'package:nj_pizza_delivery/app/auth/registration.dart';
 import 'package:nj_pizza_delivery/app/home/cart/cart.dart';
 import 'package:nj_pizza_delivery/app/home/contactUs/binding/contact_us_controller_binding.dart';
 import 'package:nj_pizza_delivery/app/home/contactUs/contact_us.dart';
-import 'package:nj_pizza_delivery/app/home/home.dart';
+import 'package:nj_pizza_delivery/app/home/home/binding/home_controller_binding.dart';
+import 'package:nj_pizza_delivery/app/home/home/home_view.dart';
 import 'package:nj_pizza_delivery/app/home/pizaa/NewOrderPizza/binding/new_order_pizza_controller_binding.dart';
 import 'package:nj_pizza_delivery/app/home/pizaa/NewOrderPizza/order_pizza.dart';
 import 'package:nj_pizza_delivery/app/home/pizaa/controller/pizza_slide_controller_binding.dart';
 import 'package:nj_pizza_delivery/app/home/pizaa/pizaa_slide.dart';
-import 'package:nj_pizza_delivery/app/home/profile/binding/profile_controller_binding.dart';
 import 'package:nj_pizza_delivery/app/home/profile/profile.dart';
 import 'package:nj_pizza_delivery/app/home/refundPolicy/refund_policy.dart';
 import 'package:nj_pizza_delivery/app/home/report/binding/report_controller_binding.dart';
@@ -25,7 +25,7 @@ import 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.PIZZASLIDER;
+  static const INITIAL = Routes.SPLASH;
 
   static final routes = <GetPage>[
     GetPage(
@@ -48,11 +48,14 @@ class AppPages {
       page: () => ForgetPasswordScreen(),
       binding: ForgetPasswordControllerBinding(),
     ),
-    GetPage(name: Routes.HOME, page: () => HomeScreen()),
+    GetPage(
+      name: Routes.HOME,
+      page: () => HomeScreen(),
+      binding: HomeControllerBinding(),
+    ),
     GetPage(
       name: Routes.PROFILE,
       page: () => ProfileScreen(),
-      binding: ProfileControllerBinding(),
     ),
     GetPage(name: Routes.CART, page: () => CartScreen()),
     GetPage(name: Routes.REFUNDPOLICY, page: () => RefundPolicyPage()),

@@ -24,6 +24,24 @@ class CartScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 18, color: Colors.grey),
                   ),
                 )
+                : controller.checkOuting.value
+                ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Order submitting to Pizza Hub!',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      CircularProgressIndicator(color: Colors.deepOrange),
+                    ],
+                  ),
+                )
                 : Column(
                   children: [
                     Expanded(
@@ -63,12 +81,7 @@ class CartScreen extends StatelessWidget {
           SizedBox(
             width: 58,
             height: 58,
-            child: ClipOval(
-              child: Image.asset(
-                item.image,
-                fit: BoxFit.cover,
-              ),
-            ),
+            child: ClipOval(child: Image.asset(item.image, fit: BoxFit.cover)),
           ),
           const SizedBox(width: 12),
 
@@ -174,20 +187,21 @@ class CartScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  if (controller.items.isEmpty) {
-                    Get.snackbar("Cart Empty", "Please add pizzas to cart");
-                  } else {
-                    Get.snackbar("Success", "Proceed to Checkout");
-                  }
+                  controller.checkOuting.value ? null : controller.checkOut();
                 },
-                child: const Text(
-                  "Checkout",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
+                child:
+                    controller.checkOuting.value
+                        ? Center(
+                          child: CircularProgressIndicator(color: Colors.white),
+                        )
+                        : const Text(
+                          "Checkout",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
               ),
             ),
           ],

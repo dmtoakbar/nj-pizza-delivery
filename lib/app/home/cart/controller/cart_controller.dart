@@ -1,29 +1,13 @@
 import 'package:get/get.dart';
 import 'package:nj_pizza_delivery/app/home/cart/model/cart_item.dart';
-import 'package:nj_pizza_delivery/constants/images_files.dart';
+import 'package:nj_pizza_delivery/constants/user_profile_data.dart';
+import 'package:nj_pizza_delivery/emailService/send/order_send.dart';
+import 'package:flutter/material.dart';
 
 class CartController extends GetxController {
   var items = <CartItem>[].obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    // Add dummy data
-    items.addAll([
-      CartItem(
-        name: "Margherita Pizza",
-        image: ImagesFiles.fullPizza,
-        price: 5.99,
-        quantity: 1,
-      ),
-      CartItem(
-        name: "Pepperoni Pizza",
-        image: ImagesFiles.fullPizza,
-        price: 7.99,
-        quantity: 2,
-      ),
-    ]);
-  }
+  RxBool checkOuting = false.obs;
 
   void addItem(CartItem item) {
     items.add(item);
@@ -47,6 +31,69 @@ class CartController extends GetxController {
     }
   }
 
+  void _showError(String message) {
+    Get.snackbar(
+      "Error",
+      message,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.TOP,
+      margin: const EdgeInsets.all(12),
+      icon: const Icon(Icons.error_outline, color: Colors.white),
+    );
+  }
+
+  void _showSuccess(String message) {
+    Get.snackbar(
+      "Success",
+      message,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.TOP,
+      margin: const EdgeInsets.all(12),
+      icon: const Icon(Icons.check_circle_outline, color: Colors.white),
+    );
+  }
+
   double get totalPrice =>
       items.fold(0, (sum, item) => sum + (item.price * item.quantity));
+
+  Future<void> checkOut() async {
+    if (items.isEmpty) {
+      _showError('Please add some items');
+      return;
+    }
+
+    try {
+      checkOuting.value = true;
+      userProfileData.dataLoaded ? null : await userProfileData.getUserData();
+
+      final List<Map<String, dynamic>> orderItems =
+          items.map((item) {
+            return {
+              'name': item.name,
+              'quantity': item.quantity,
+              'price': item.price,
+            };
+          }).toList();
+
+      bool status = await sendOrderToAdmin(
+        name: userProfileData.name,
+        email: userProfileData.email,
+        phone: userProfileData.mobile,
+        address: userProfileData.address,
+        orderItems: orderItems,
+      );
+      if (status) {
+        _showSuccess("Your order has been submitted successfully!");
+        items.clear();
+      } else {
+        _showError("Something went wrong!");
+      }
+    } catch (e) {
+      _showError("Something went wrong!");
+    } finally {
+      checkOuting.value = false;
+    }
+  }
 }

@@ -34,17 +34,17 @@ class PizzaSliderController extends GetxController
 
     controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 650),
     );
 
     outGoingController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 650),
     );
 
     rowOpacityController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 200),
     );
 
     slideAnimation = const AlwaysStoppedAnimation(Offset.zero);
@@ -111,7 +111,7 @@ class PizzaSliderController extends GetxController
 
     plateRotation.value += isLeft ? -0.20 : 0.20;
 
-    Future.delayed(const Duration(milliseconds: 600), () {
+    Future.delayed(const Duration(milliseconds: 350), () {
       rowOpacityController.reverse();
     });
   }

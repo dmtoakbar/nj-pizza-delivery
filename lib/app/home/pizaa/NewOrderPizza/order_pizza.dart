@@ -3,16 +3,16 @@ import 'package:get/get.dart';
 import 'package:nj_pizza_delivery/app/home/cart/controller/cart_controller.dart';
 import 'package:nj_pizza_delivery/app/home/cart/model/cart_item.dart';
 import 'package:nj_pizza_delivery/app/home/pizaa/NewOrderPizza/controller/new_pizza_order.dart';
-import 'package:nj_pizza_delivery/app/home/pizaa/controller/pizza_packing_controller.dart';
-import 'package:nj_pizza_delivery/app/home/pizaa/widget/pizza_packing_widget.dart';
+import 'package:nj_pizza_delivery/app/home/pizaa/NewOrderPizza/controller/new_pizza_packing_controller.dart';
+import 'package:nj_pizza_delivery/app/home/pizaa/NewOrderPizza/widgets/new_pizza_packing_widgets.dart';
 import 'package:nj_pizza_delivery/app/home/widgets/appBar/app_bar_widget.dart';
 
 class NewOrderPizza extends GetView<NewPizzaOrderController> {
   NewOrderPizza({super.key});
 
   final pizzaPacking = Get.put(
-    PizzaPackingAnimationController(extraAddOnePage: true),
-    permanent: false,
+    NewPizzaPackingAnimationController(),
+    permanent: false
   );
 
   final cart = Get.find<CartController>();
@@ -39,8 +39,9 @@ class NewOrderPizza extends GetView<NewPizzaOrderController> {
           );
 
           return Stack(
+            alignment: Alignment.center,
             children: [
-              PizzaPackingAnimationWidget(),
+              NewPizzaPackingAnimationWidget(),
 
               /// 🍕 PIZZA
               Obx(() {

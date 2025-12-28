@@ -11,7 +11,7 @@ class ForgetPasswordScreen extends GetView<ForgetPasswordController> {
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 28),
-            child: Column(
+            child: Obx(() => Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 20),
@@ -45,7 +45,8 @@ class ForgetPasswordScreen extends GetView<ForgetPasswordController> {
                 const SizedBox(height: 8),
 
                 Text(
-                  "Enter your email and we’ll send you a reset link.",
+                  "Enter your email and we’ll send you a reset link.\n"
+                      "Please check your spam or junk folder if you don’t see it in your inbox.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
@@ -85,8 +86,18 @@ class ForgetPasswordScreen extends GetView<ForgetPasswordController> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    onPressed: controller.sendResetLink,
-                    child: const Text(
+                    onPressed:
+                    controller.isLoading.value
+                        ? null
+                        : controller.sendResetLink,
+                    child:
+                    controller.isLoading.value
+                        ? Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    )
+                        : const Text(
                       "Send Reset Link",
                       style: TextStyle(
                         fontSize: 18,
@@ -100,17 +111,15 @@ class ForgetPasswordScreen extends GetView<ForgetPasswordController> {
                 const SizedBox(height: 22),
 
                 TextButton(
-                  onPressed: () => Get.back(),
+                  onPressed:
+                      () => controller.isLoading.value ? null : Get.back(),
                   child: const Text(
                     "Back to Login",
-                    style: TextStyle(
-                      color: Colors.deepOrange,
-                      fontSize: 15,
-                    ),
+                    style: TextStyle(color: Colors.deepOrange, fontSize: 15),
                   ),
                 ),
               ],
-            ),
+            )),
           ),
         ),
       ),

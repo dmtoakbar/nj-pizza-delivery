@@ -5,6 +5,7 @@ import 'package:nj_pizza_delivery/app/home/cart/controller/cart_controller.dart'
 import 'package:nj_pizza_delivery/routes/app_routes.dart';
 
 class TopBarWidget extends StatelessWidget {
+  final cart = Get.find<CartController>();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -48,7 +49,6 @@ class TopBarWidget extends StatelessWidget {
               Row(
                 children: [
                   Obx(() {
-                    final cart = Get.find<CartController>();
                     final count = cart.items.length;
 
                     return TweenAnimationBuilder<double>(
@@ -76,7 +76,6 @@ class TopBarWidget extends StatelessWidget {
                             ),
 
                             /// 🔴 CART COUNT
-                            if (count > 0)
                               Positioned(
                                 top: -6,
                                 right: -2,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nj_pizza_delivery/routes/app_routes.dart';
 import 'controllers/registrationController.dart';
 
 class PizzaRegistrationScreen extends GetView<RegistrationController> {
@@ -91,6 +92,7 @@ class PizzaRegistrationScreen extends GetView<RegistrationController> {
                     controller: controller.phoneController,
                     keyboardType: TextInputType.phone,
                     style: GoogleFonts.poppins(),
+                    maxLength: 10,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.phone_android),
                       labelText: "Phone Number",
@@ -124,7 +126,7 @@ class PizzaRegistrationScreen extends GetView<RegistrationController> {
                   // Password
                   TextField(
                     controller: controller.passwordController,
-                    obscureText: true,
+                    obscureText: controller.isPasswordHidden.value ? true : false,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.lock_outline),
                       labelText: "Password",
@@ -152,8 +154,8 @@ class PizzaRegistrationScreen extends GetView<RegistrationController> {
 
                   // Password
                   TextField(
-                    controller: controller.confirmPassword,
-                    obscureText: true,
+                    controller: controller.confirmPasswordController,
+                    obscureText: controller.isConfirmPasswordHidden.value ? true : false,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.lock_outline),
                       labelText: "Confirm Password",
@@ -164,11 +166,11 @@ class PizzaRegistrationScreen extends GetView<RegistrationController> {
                       ),
                       suffixIcon: IconButton(
                         onPressed: () {
-                          controller.cisPasswordHidden.value =
-                              !controller.cisPasswordHidden.value;
+                          controller.isConfirmPasswordHidden.value =
+                              !controller.isConfirmPasswordHidden.value;
                         },
                         icon: Icon(
-                          controller.cisPasswordHidden.value
+                          controller.isConfirmPasswordHidden.value
                               ? Icons.visibility_off
                               : Icons.visibility,
                           color: Colors.black,
@@ -190,15 +192,25 @@ class PizzaRegistrationScreen extends GetView<RegistrationController> {
                           borderRadius: BorderRadius.circular(14),
                         ),
                       ),
-                      onPressed: controller.register,
-                      child: const Text(
-                        "Create Account",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
+                      onPressed:
+                          controller.isLoading.value
+                              ? null
+                              : controller.register,
+                      child:
+                          controller.isLoading.value
+                              ? Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              )
+                              : Text(
+                                "Create Account",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
                     ),
                   ),
 
@@ -209,7 +221,10 @@ class PizzaRegistrationScreen extends GetView<RegistrationController> {
                     children: [
                       const Text("Already have an account? "),
                       GestureDetector(
-                        onTap: () => Get.back(),
+                        onTap:
+                            controller.isLoading.value
+                                ? null
+                                : () => Get.offNamed(Routes.LOGIN),
                         child: const Text(
                           "Login",
                           style: TextStyle(color: Colors.deepOrange),
