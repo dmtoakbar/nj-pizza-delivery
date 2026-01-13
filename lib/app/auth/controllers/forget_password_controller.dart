@@ -76,6 +76,7 @@ class ForgetPasswordController extends GetxController {
       await _auth.sendPasswordResetEmail(email: email);
 
       _showSuccess("Password reset link sent to $email");
+      Get.back();
     } on FirebaseAuthException catch (e) {
       _showError(e.message ?? "Failed to send reset link");
     } catch (e) {
