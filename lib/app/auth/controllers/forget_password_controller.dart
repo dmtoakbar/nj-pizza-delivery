@@ -1,86 +1,77 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:nj_pizza_delivery/api/api_path.dart';
+import '../../../api/config.dart';
+import '../../../routes/app_routes.dart';
+import '../../../utils/app_toast.dart';
+import '../verify_opt_and_update_password.dart';
 
-class ForgetPasswordController extends GetxController {
+class ForgetPasswordController extends GetxController with WidgetsBindingObserver {
   // ───────────── Text Controller ─────────────
   final emailController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
+  RxDouble imageTop = 0.0.obs;
 
   // ───────────── UI State ─────────────
   final isLoading = false.obs;
 
-  // ───────────── Firebase ─────────────
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  // ───────────── Snackbars ─────────────
-  void _showError(String message) {
-    Get.snackbar(
-      "Error",
-      message,
-      backgroundColor: Colors.red,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.TOP,
-      margin: const EdgeInsets.all(12),
-      icon: const Icon(Icons.error_outline, color: Colors.white),
-    );
+  @override
+  void onInit() {
+    WidgetsBinding.instance.addObserver(this);
+    scrollController.addListener(() {
+      imageTop.value = scrollController.offset;
+    });
+    super.onInit();
   }
 
-  void _showSuccess(String message) {
-    Get.snackbar(
-      "Success",
-      message,
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.TOP,
-      margin: const EdgeInsets.all(12),
-      icon: const Icon(Icons.check_circle_outline, color: Colors.white),
-    );
+  @override
+  void didChangeMetrics() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        imageTop.value = scrollController.offset;
+      }
+    });
   }
 
-  // ───────────── Send Reset Link ─────────────
-  Future<void> sendResetLink() async {
+  // ───────────── Send OTP for Reset ─────────────
+  Future<void> sendResetOtp() async {
     final email = emailController.text.trim();
 
     if (email.isEmpty) {
-      _showError("Please enter your email address");
+      AppToast.error("Please enter your email address");
       return;
     }
 
     if (!GetUtils.isEmail(email)) {
-      _showError("Please enter a valid email address");
+      AppToast.error("Please enter a valid email address");
       return;
     }
+
+    if (isLoading.value) return;
 
     try {
       isLoading.value = true;
 
-      final querySnapshot =
-          await FirebaseFirestore.instance
-              .collection('users')
-              .where('email', isEqualTo: email)
-              .get();
+      final response = await Config.dio.post(
+        '/${ApiPath.sentResetPasswordOtp}',
+        data: {'email': email},
+      );
 
-      if (querySnapshot.docs.isEmpty) {
-        // No user found
-        Get.snackbar(
-          "Error",
-          "No account found with this email",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+      final data =
+          response.data is String ? jsonDecode(response.data) : response.data;
+
+      if (response.statusCode == 200 && data['success'] == true) {
+        AppToast.success("OTP sent to $email");
+
+        // ➡️ Navigate to OTP screen
+        Get.toNamed(Routes.RESETPASSWORD, arguments: email);
         return;
       }
 
-      // 🔹 Send password reset email
-      await _auth.sendPasswordResetEmail(email: email);
-
-      _showSuccess("Password reset link sent to $email");
-      Get.back();
-    } on FirebaseAuthException catch (e) {
-      _showError(e.message ?? "Failed to send reset link");
+      AppToast.error(data['message'] ?? "Failed to send OTP");
     } catch (e) {
-      _showError("Something went wrong. Try again");
+      AppToast.error("Server error. Please try again.");
     } finally {
       isLoading.value = false;
     }
@@ -89,6 +80,8 @@ class ForgetPasswordController extends GetxController {
   // ───────────── Dispose ─────────────
   @override
   void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    scrollController.dispose();
     emailController.dispose();
     super.onClose();
   }

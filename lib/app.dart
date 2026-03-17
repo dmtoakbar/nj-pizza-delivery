@@ -12,8 +12,9 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Pizza Delivery',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        textTheme: GoogleFonts.playfairDisplayTextTheme(),
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+        textTheme: GoogleFonts.poppinsTextTheme(),
       ),
       debugShowCheckedModeBanner: false,
       initialRoute: AppPages.INITIAL,

@@ -1,242 +1,223 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nj_pizza_delivery/app/auth/widgets/app_text_field.dart';
 import 'package:nj_pizza_delivery/routes/app_routes.dart';
+import '../../constants/images_files.dart';
 import 'controllers/registrationController.dart';
 
 class PizzaRegistrationScreen extends GetView<RegistrationController> {
+  const PizzaRegistrationScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFDFAF5),
-      body: SafeArea(
-        child: Center(
-          child: Obx(
-            () => SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 20),
-
-                  // Pizza Logo
-                  Container(
-                    height: 110,
-                    width: 110,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.orange.shade100,
-                    ),
-                    child: const Icon(
-                      Icons.local_pizza,
-                      size: 65,
-                      color: Colors.deepOrange,
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  const Text(
-                    "Create Your Pizza Account",
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepOrange,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Sign up to order your favorite pizzas!",
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-
-                  const SizedBox(height: 35),
-
-                  // Full Name
-                  TextField(
-                    controller: controller.nameController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.person_outline),
-                      labelText: "Full Name",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Email
-                  TextField(
-                    controller: controller.emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      labelText: "Email",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Phone
-                  TextField(
-                    controller: controller.phoneController,
-                    keyboardType: TextInputType.phone,
-                    style: GoogleFonts.poppins(),
-                    maxLength: 10,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.phone_android),
-                      labelText: "Phone Number",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Address
-                  TextField(
-                    controller: controller.addressController,
-                    maxLines: 2,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.location_on_outlined),
-                      labelText: "Delivery Address",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Password
-                  TextField(
-                    controller: controller.passwordController,
-                    obscureText: controller.isPasswordHidden.value ? true : false,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      labelText: "Password",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          controller.isPasswordHidden.value =
-                              !controller.isPasswordHidden.value;
-                        },
-                        icon: Icon(
-                          controller.isPasswordHidden.value
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Password
-                  TextField(
-                    controller: controller.confirmPasswordController,
-                    obscureText: controller.isConfirmPasswordHidden.value ? true : false,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      labelText: "Confirm Password",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          controller.isConfirmPasswordHidden.value =
-                              !controller.isConfirmPasswordHidden.value;
-                        },
-                        icon: Icon(
-                          controller.isConfirmPasswordHidden.value
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  // Register Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepOrange,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      onPressed:
-                          controller.isLoading.value
-                              ? null
-                              : controller.register,
-                      child:
-                          controller.isLoading.value
-                              ? Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ),
-                              )
-                              : Text(
-                                "Create Account",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 22),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Already have an account? "),
-                      GestureDetector(
-                        onTap:
-                            controller.isLoading.value
-                                ? null
-                                : () => Get.offNamed(Routes.LOGIN),
-                        child: const Text(
-                          "Login",
-                          style: TextStyle(color: Colors.deepOrange),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 40),
-                ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Obx(
+              () => Positioned(
+                top: -controller.imageTop.value,
+                right: 0,
+                child: Image.asset(
+                  ImagesFiles.authRightCornerImage,
+                  height: 180,
+                ),
               ),
             ),
-          ),
+
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: SingleChildScrollView(
+                  controller: controller.scrollController,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight:
+                          MediaQuery.of(context).size.height -
+                          MediaQuery.of(context).padding.top,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 40),
+
+                          /// Back Button (left aligned)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: InkWell(
+                              onTap: () => Get.back(),
+                              child: const Icon(
+                                Icons.arrow_back_ios_new,
+                                size: 24,
+                                color: Color(0xFF3E2723),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          /// Title (centered)
+                          Text(
+                            "Create\nAccount",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF3E2723),
+                              height: 1.2,
+                            ),
+                          ),
+
+                          const SizedBox(height: 30),
+                          Spacer(),
+
+                          /// Scrollable Content
+                          AppTextField(
+                            controller: controller.nameController,
+                            hintText: "Full Name",
+                            keyboardType: TextInputType.text,
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          /// Email Field
+                          AppTextField(
+                            controller: controller.emailController,
+                            hintText: "Email",
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          /// Email Field
+                          AppTextField(
+                            controller: controller.phoneController,
+                            hintText: "Phone Number",
+                            keyboardType: TextInputType.phone,
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          AppTextField(
+                            controller: controller.addressController,
+                            hintText: "Delivery Address",
+                            keyboardType: TextInputType.streetAddress,
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          /// Password Field
+                          AppTextField(
+                            controller: controller.passwordController,
+                            hintText: "Password",
+                            obscureText: true,
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          AppTextField(
+                            controller: controller.confirmPasswordController,
+                            hintText: "Confirm Password",
+                            obscureText: true,
+                          ),
+
+                          Spacer(),
+
+                          const SizedBox(height: 50),
+
+                          /// Bottom Section (Fixed)
+                          Obx(
+                            () => GestureDetector(
+                              onTap:
+                                  controller.isLoading.value
+                                      ? null
+                                      : controller.register,
+                              child: Container(
+                                height: 55,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18),
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFFFF6B3D),
+                                      Color(0xFFEB5525),
+                                    ],
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.deepOrange.withOpacity(0.4),
+                                      blurRadius: 18,
+                                      offset: const Offset(0, 8),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child:
+                                      controller.isLoading.value
+                                          ? const SizedBox(
+                                            height: 34,
+                                            width: 34,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2.5,
+                                            ),
+                                          )
+                                          : Text(
+                                            "Create Account",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 18),
+
+                          /// Sign Up
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Already have an account? ",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () => Get.toNamed(Routes.LOGIN),
+                                child: const Text(
+                                  "Sign In",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF3E2723),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 30),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

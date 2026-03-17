@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../../../../emailService/send/contact_us.dart';
+import 'package:get/get.dart' hide FormData;
+import 'package:nj_pizza_delivery/api/api_path.dart';
+import '../../../../api/config.dart';
+import 'package:dio/dio.dart';
 
 class ContactUsController extends GetxController {
   final nameController = TextEditingController();
@@ -52,21 +55,30 @@ class ContactUsController extends GetxController {
 
     try {
       isSending.value = true;
-      bool status = await sendContactUsToAdmin(
-        name: nameController.text.trim(),
-        email: emailController.text.trim(),
-        phone: phoneController.text.trim(),
-        subject: subjectController.text.trim(),
-        query: messageController.text.trim(),
-        address: '',
+      final formData = FormData.fromMap({
+        'name': nameController.text.trim(),
+        'phone': phoneController.text.trim(),
+        'subject': subjectController.text.trim(),
+        'email': emailController.text.trim(),
+        'message': messageController.text.trim(),
+      });
+      final response = await Config.dio.post(
+        '/${ApiPath.contactUs}',
+        data: formData,
       );
-      if (status) {
+      final Map<String, dynamic> data =
+          response.data is String
+              ? jsonDecode(response.data)
+              : Map<String, dynamic>.from(response.data);
+
+      if (response.statusCode == 200 && data['success'] == true) {
         _showSuccess("Your message has been sent successfully!");
         nameController.clear();
         emailController.clear();
         phoneController.clear();
         subjectController.clear();
         messageController.clear();
+        return;
       } else {
         _showError("Something went wrong!");
       }

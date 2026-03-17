@@ -1,10 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:nj_pizza_delivery/routes/app_routes.dart';
 
-class RegistrationController extends GetxController {
+import '../../../api/config.dart';
+
+class RegistrationController extends GetxController with WidgetsBindingObserver {
   // ───────────── Text Controllers ─────────────
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -12,15 +14,31 @@ class RegistrationController extends GetxController {
   final addressController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
+  RxDouble imageTop = 0.0.obs;
+
+  @override
+  void onInit() {
+    WidgetsBinding.instance.addObserver(this);
+    scrollController.addListener(() {
+      imageTop.value = scrollController.offset;
+    });
+    super.onInit();
+  }
+
+  @override
+  void didChangeMetrics() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        imageTop.value = scrollController.offset;
+      }
+    });
+  }
 
   // ───────────── UI State ─────────────
   RxBool isPasswordHidden = true.obs;
   RxBool isConfirmPasswordHidden = true.obs;
   final isLoading = false.obs;
-
-  // ───────────── Firebase ─────────────
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // ───────────── Snackbars ─────────────
   void _showError(String message) {
@@ -47,9 +65,9 @@ class RegistrationController extends GetxController {
     );
   }
 
-  // ───────────── Register Method ─────────────
+  //───────────── Register via API ─────────────
   Future<void> register() async {
-    // Empty fields check
+    // Validation
     if (nameController.text.trim().isEmpty ||
         emailController.text.trim().isEmpty ||
         phoneController.text.trim().isEmpty ||
@@ -60,26 +78,21 @@ class RegistrationController extends GetxController {
       return;
     }
 
-    // Email validation
     if (!GetUtils.isEmail(emailController.text.trim())) {
       _showError("Please enter a valid email address");
       return;
     }
 
-    // Phone validation (India – 10 digits)
-    if (!RegExp(r'^[0-9]{10}$')
-        .hasMatch(phoneController.text.trim())) {
+    if (!RegExp(r'^[0-9]{10}$').hasMatch(phoneController.text.trim())) {
       _showError("Please enter a valid 10-digit phone number");
       return;
     }
 
-    // Password validation
     if (passwordController.text.length < 6) {
       _showError("Password must be at least 6 characters");
       return;
     }
 
-    // Password match
     if (passwordController.text.trim() !=
         confirmPasswordController.text.trim()) {
       _showError("Passwords do not match");
@@ -88,48 +101,40 @@ class RegistrationController extends GetxController {
 
     try {
       isLoading.value = true;
-
-      // Firebase Auth
-      final UserCredential userCredential =
-      await _auth.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-
-      final String uid = userCredential.user!.uid;
-
-      // Firestore
-      await _firestore.collection('users').doc(uid).set({
-        'uid': uid,
+      final formData = FormData.fromMap({
         'name': nameController.text.trim(),
-        'email': emailController.text.trim(),
         'phone': phoneController.text.trim(),
         'address': addressController.text.trim(),
-        'createdAt': FieldValue.serverTimestamp(),
+        'email': emailController.text.trim(),
+        'password': passwordController.text.trim(),
       });
 
-      _showSuccess("Account created successfully");
+      final response = await Config.dio.post('/auth/register', data: formData);
 
-      // Navigate to login
-      Get.offNamed(Routes.LOGIN);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
-        _showError("Email already registered");
-      } else if (e.code == 'weak-password') {
-        _showError("Password should be at least 6 characters");
+      final Map<String, dynamic> data =
+      response.data is String
+          ? jsonDecode(response.data)
+          : Map<String, dynamic>.from(response.data);
+
+      if (response.statusCode == 200 && data['success'] == true) {
+        _showSuccess("Account created successfully");
+        Get.offNamed(Routes.LOGIN);
+        return;
       } else {
-        _showError(e.message ?? "Registration failed");
+        _showError(data['message'] ?? "Registration failed");
       }
     } catch (e) {
-      _showError("Something went wrong. Try again");
+      _showError("Server error. Please try again.");
     } finally {
       isLoading.value = false;
     }
   }
 
-  // ───────────── Dispose Controllers ─────────────
+  // ───────────── Dispose ─────────────
   @override
   void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    scrollController.dispose();
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();
@@ -139,4 +144,3 @@ class RegistrationController extends GetxController {
     super.onClose();
   }
 }
-

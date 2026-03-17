@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData;
+import 'package:dio/dio.dart';
+import 'package:nj_pizza_delivery/api/api_path.dart';
 import 'package:nj_pizza_delivery/constants/user_profile_data.dart';
-import 'package:nj_pizza_delivery/emailService/send/report_issue.dart';
+import '../../../../api/config.dart';
 
 class ReportController extends GetxController {
   final subjectController = TextEditingController();
@@ -34,8 +37,9 @@ class ReportController extends GetxController {
   }
 
   Future<void> submitReport() async {
-    if (subjectController.text.isEmpty ||
-        messageController.text.isEmpty ||
+    // ✅ Validation
+    if (orderIdController.text.isEmpty ||
+        subjectController.text.isEmpty ||
         messageController.text.isEmpty) {
       _showError("Please fill all required fields");
       return;
@@ -43,26 +47,46 @@ class ReportController extends GetxController {
 
     try {
       isSending.value = true;
-      userProfileData.dataLoaded ? null : await userProfileData.getUserData();
-      bool status = await sendOrderIssueToAdmin(
-        name: userProfileData.name,
-        email: userProfileData.email,
-        phone: userProfileData.mobile,
-        address: userProfileData.address,
-        orderId: orderIdController.text.trim(),
-        issue: subjectController.text.trim(),
-        issueMessage: messageController.text.trim(),
+
+      // ✅ Ensure user data is loaded
+      if (!userProfileData.dataLoaded) {
+        await userProfileData.getUserData();
+      }
+
+      // ✅ Form data
+      final formData = FormData.fromMap({
+        "name": userProfileData.name,
+        "email": userProfileData.email,
+        "phone": userProfileData.mobile,
+        "address": userProfileData.address,
+        "orderId": orderIdController.text.trim(),
+        "issue": subjectController.text.trim(),
+        "issueMessage": messageController.text.trim(),
+      });
+
+      // ✅ API call
+      final response = await Config.dio.post(
+        '/${ApiPath.reportIssue}',
+        data: formData,
       );
-      if (status) {
-        _showSuccess("Your query has been sent successfully!");
+
+      final Map<String, dynamic> data =
+          response.data is String
+              ? jsonDecode(response.data)
+              : Map<String, dynamic>.from(response.data);
+
+      if (response.statusCode == 200 && data['success'] == true) {
+        _showSuccess(
+          data['message'] ?? "Your report has been sent successfully!",
+        );
         orderIdController.clear();
         subjectController.clear();
         messageController.clear();
       } else {
-        _showError("Something went wrong!");
+        _showError(data['message'] ?? "Something went wrong!");
       }
     } catch (e) {
-      _showError("Something went wrong!");
+      _showError("Something went wrong! ${e.toString()}");
     } finally {
       isSending.value = false;
     }

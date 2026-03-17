@@ -5,7 +5,11 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Nj Pizza Delivery</string>
+	<string>Zynzo</string>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>This app needs microphone access for voice search.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>This app needs speech recognition for voice search.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

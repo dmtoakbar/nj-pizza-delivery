@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:322542231420:android:66d1518429806b9e65cef9",
+        "mobilesdk_app_id": "1:322542231420:android:a75d820b11b4914565cef9",
         "android_client_info": {
-          "package_name": "com.example.nj_pizza_delivery"
+          "package_name": "com.pizzahub.fastdelivery"
         }
       },
       "oauth_client": [],

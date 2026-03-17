@@ -1,79 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nj_pizza_delivery/app/splash/controller/splash_controller.dart';
+import 'package:nj_pizza_delivery/constants/app_strings.dart';
+import '../../constants/images_files.dart';
 
-class SplashScreen extends StatefulWidget {
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-  final SplashController splashController = Get.put(SplashController());
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Pizza icon scale animation
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat(reverse: true);
-
-    _animation = Tween<double>(
-      begin: 0.9,
-      end: 1.1,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class SplashScreen extends GetView<SplashController> {
+  const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Get.find<SplashController>();
     return Scaffold(
       body: Container(
-        color: Colors.deepOrange,
+        color: Colors.white,
         child: Center(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ScaleTransition(
-                scale: _animation,
-                child: Container(
-                  height: 120,
-                  width: 120,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.orange.shade200,
-                  ),
-                  child: const Icon(
-                    Icons.local_pizza,
-                    size: 70,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                "Pizza Hub",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+              Center(
+                child: Card(
                   color: Colors.white,
-                  letterSpacing: 1.2,
+                  elevation: 8,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                    side: const BorderSide(color: Color(0xFFEB5525), width: 4),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: ClipOval(
+                      child: SizedBox(
+                        height: 150,
+                        width: 150,
+                        child: OverflowBox(
+                          maxHeight: 300,
+                          maxWidth: 300,
+                          child: Image.asset(
+                            ImagesFiles.onboardImage,
+                            width: 200,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 8),
+
+              const SizedBox(height: 20),
+
               const Text(
-                "Delicious pizzas in one tap",
-                style: TextStyle(fontSize: 16, color: Colors.white70),
+                AppStrings.appName,
+                style: TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF3E2723),
+                ),
+              ),
+
+              const SizedBox(height: 6),
+
+              const Text(
+                "Be Happy With ${AppStrings.appName}!",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey,
+                ),
               ),
             ],
           ),

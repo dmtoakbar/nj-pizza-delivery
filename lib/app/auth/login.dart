@@ -1,172 +1,199 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:nj_pizza_delivery/app/auth/widgets/app_text_field.dart';
+import 'package:nj_pizza_delivery/constants/images_files.dart';
 import 'package:nj_pizza_delivery/routes/app_routes.dart';
 import 'controllers/loginController.dart';
 
 class PizzaLoginScreen extends GetView<LoginController> {
+  const PizzaLoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFDFAF5),
-      body: SafeArea(
-        child: Center(
-          child: Obx(
-            () => SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 20),
-
-                  // Pizza Logo
-                  Container(
-                    height: 120,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.orange.shade100,
-                    ),
-                    child: const Icon(
-                      Icons.local_pizza,
-                      size: 70,
-                      color: Colors.deepOrange,
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Title
-                  const Text(
-                    "Welcome to Pizza Hub",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepOrange,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Order delicious pizzas in one tap",
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-
-                  const SizedBox(height: 35),
-
-                  // Email Field (Gradient Border)
-                  TextField(
-                    controller: controller.emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      labelText: "Email",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Password Field (Gradient Border)
-                  TextField(
-                    controller: controller.passwordController,
-                    obscureText:
-                        controller.isPasswordHidden.value ? true : false,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      labelText: "Password",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          controller.isPasswordHidden.value =
-                              !controller.isPasswordHidden.value;
-                        },
-                        icon: Icon(
-                          controller.isPasswordHidden.value
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  // Login Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepOrange,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      onPressed:
-                          controller.isLoading.value ? null : controller.login,
-                      child:
-                          controller.isLoading.value
-                              ? Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ),
-                              )
-                              : const Text(
-                                "Login",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 22),
-
-                  TextButton(
-                    onPressed: () {
-                      controller.isLoading.value
-                          ? null
-                          : Get.toNamed(Routes.FORGETPASSWORD);
-                    },
-                    child: const Text(
-                      "Forgot Password?",
-                      style: TextStyle(color: Colors.deepOrange, fontSize: 15),
-                    ),
-                  ),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Don't have an account? "),
-                      GestureDetector(
-                        onTap: () {
-                          controller.isLoading.value
-                              ? null
-                              : Get.toNamed(Routes.REGISTRATION);
-                        },
-                        child: const Text(
-                          "Sign Up",
-                          style: TextStyle(color: Colors.deepOrange),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
+      child: Scaffold(
+        // resizeToAvoidBottomInset: false,
+        body: Stack(
+          children: [
+            Obx(
+              () => Positioned(
+                top: -controller.imageTop.value,
+                right: 0,
+                child: Image.asset(
+                  ImagesFiles.authRightCornerImage,
+                  height: 180,
+                ),
               ),
             ),
-          ),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: SingleChildScrollView(
+                  controller: controller.scrollController,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight:
+                          MediaQuery.of(context).size.height -
+                          MediaQuery.of(context).padding.top,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 40),
+
+                          /// Back Button (left aligned)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: InkWell(
+                              onTap: () => Get.back(),
+                              child: const Icon(
+                                Icons.arrow_back_ios_new,
+                                size: 24,
+                                color: Color(0xFF3E2723),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          /// Title (centered)
+                          Text(
+                            "Welcome\nBack",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF3E2723),
+                              height: 1.2,
+                            ),
+                          ),
+
+                          const SizedBox(height: 30),
+                          Spacer(),
+
+                          /// Scrollable Content
+
+                          /// Email Field
+                          AppTextField(
+                            controller: controller.emailController,
+                            hintText: "Email",
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          /// Password Field
+                          AppTextField(
+                            controller: controller.passwordController,
+                            hintText: "Password",
+                            obscureText: true,
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: InkWell(
+                              onTap:
+                                  controller.isLoading.value
+                                      ? null
+                                      : () =>
+                                          Get.toNamed(Routes.FORGETPASSWORD),
+                              child: Text(
+                                "Forgot Password?",
+                                style: GoogleFonts.poppins(
+                                  color: Colors.deepOrange,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          Spacer(),
+
+                          /// Bottom Section (Fixed)
+                          Obx(
+                            () => GestureDetector(
+                              onTap:
+                                  controller.isLoading.value
+                                      ? null
+                                      : controller.login,
+                              child: Container(
+                                height: 55,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  color: Color(0xFFEB5525),
+                                ),
+                                child: Center(
+                                  child:
+                                      controller.isLoading.value
+                                          ? const SizedBox(
+                                            height: 34,
+                                            width: 34,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2.5,
+                                            ),
+                                          )
+                                          : Text(
+                                            "Login",
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 18),
+
+                          /// Sign Up
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Don’t have an account? ",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () => Get.toNamed(Routes.REGISTRATION),
+                                child: const Text(
+                                  "Sign Up",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF3E2723),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 30),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

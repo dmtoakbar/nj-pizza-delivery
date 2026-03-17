@@ -1,147 +1,179 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:nj_pizza_delivery/app/auth/controllers/forget_password_controller.dart';
+import 'package:nj_pizza_delivery/app/auth/widgets/app_text_field.dart';
+import '../../constants/images_files.dart';
 
 class ForgetPasswordScreen extends GetView<ForgetPasswordController> {
+  const ForgetPasswordScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFDFAF5),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
-            child: Obx(() => Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20),
-
-                // Pizza Icon
-                Container(
-                  height: 110,
-                  width: 110,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.orange.shade100,
-                  ),
-                  child: const Icon(
-                    Icons.local_pizza,
-                    size: 65,
-                    color: Colors.deepOrange,
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                const Text(
-                  "Forgot Password?",
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepOrange,
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                Text(
-                  "Enter your email and we’ll send you a reset link.\n"
-                      "Please check your spam or junk folder if you don’t see it in your inbox.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey[700],
-                  ),
-                ),
-
-                const SizedBox(height: 35),
-
-                // Email Field (Gradient Border)
-                _gradientBorderField(
-                  child: TextField(
-                    controller: controller.emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      labelText: "Email Address",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-                // Send Reset Link Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 55,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepOrange,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    onPressed:
-                    controller.isLoading.value
-                        ? null
-                        : controller.sendResetLink,
-                    child:
-                    controller.isLoading.value
-                        ? Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                      ),
-                    )
-                        : const Text(
-                      "Send Reset Link",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 22),
-
-                TextButton(
-                  onPressed:
-                      () => controller.isLoading.value ? null : Get.back(),
-                  child: const Text(
-                    "Back to Login",
-                    style: TextStyle(color: Colors.deepOrange, fontSize: 15),
-                  ),
-                ),
-              ],
-            )),
-          ),
-        ),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
       ),
-    );
-  }
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Obx(
+              () => Positioned(
+                top: -controller.imageTop.value,
+                right: 0,
+                child: Image.asset(
+                  ImagesFiles.authRightCornerImage,
+                  height: 180,
+                ),
+              ),
+            ),
 
-  // --- Gradient Border Wrapper ---
-  Widget _gradientBorderField({required Widget child}) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        gradient: const LinearGradient(
-          colors: [Colors.deepOrange, Colors.orange],
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: SingleChildScrollView(
+                  controller: controller.scrollController,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight:
+                          MediaQuery.of(context).size.height -
+                          MediaQuery.of(context).padding.top,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Obx(
+                        () => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 40),
+
+                            /// Back Button (left aligned)
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: InkWell(
+                                onTap: () => Get.back(),
+                                child: const Icon(
+                                  Icons.arrow_back_ios_new,
+                                  size: 24,
+                                  color: Color(0xFF3E2723),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 30),
+
+                            /// Title (centered)
+                            Text(
+                              "Forgot\nPassword?",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF3E2723),
+                                height: 1.2,
+                              ),
+                            ),
+
+                            const SizedBox(height: 30),
+                            Spacer(),
+
+                            /// Scrollable Content
+                            Text(
+                              "Enter your email and we’ll send you an OTP."
+                              "Check spam folder if you don’t see it.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+
+                            const SizedBox(height: 35),
+
+                            /// Email Field
+                            AppTextField(
+                              controller: controller.emailController,
+                              hintText: "Email",
+                              keyboardType: TextInputType.emailAddress,
+                            ),
+
+                            const SizedBox(height: 30),
+
+                            Spacer(),
+
+                            /// Bottom Section (Fixed)
+                            GestureDetector(
+                              onTap:
+                                  controller.isLoading.value
+                                      ? null
+                                      : controller.sendResetOtp,
+                              child: Container(
+                                height: 55,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFFFF6B3D),
+                                      Color(0xFFEB5525),
+                                    ],
+                                  ),
+                                ),
+                                child: Center(
+                                  child:
+                                      controller.isLoading.value
+                                          ? const SizedBox(
+                                            height: 34,
+                                            width: 34,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2.5,
+                                            ),
+                                          )
+                                          : Text(
+                                            "Send OTP",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 18),
+
+                            /// Sign Up
+                            Align(
+                              alignment: Alignment.center,
+                              child: TextButton(
+                                onPressed:
+                                    controller.isLoading.value
+                                        ? null
+                                        : () => Get.back(),
+                                child: Text(
+                                  "Back to Login",
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.deepOrange,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 30),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: child,
       ),
     );
   }
