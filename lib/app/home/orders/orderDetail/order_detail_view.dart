@@ -222,7 +222,7 @@ class OrderDetailsPage extends StatelessWidget {
                                                                     ),
                                                               ),
                                                               child: Text(
-                                                                "+ ${extra.name} \$${extra.price.toStringAsFixed(0)}",
+                                                                "+ ${extra.name} x ${extra.quantity} Topping (\$${extra.price.toStringAsFixed(0)} each)",
                                                                 style: GoogleFonts.poppins(
                                                                   fontSize: 12,
                                                                   fontWeight:

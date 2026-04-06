@@ -1,31 +1,39 @@
 class ExtraItem {
   final String name;
   final double price;
+  final int quantity; // ✅ NEW
 
   const ExtraItem({
     required this.name,
     required this.price,
+    this.quantity = 1, // ✅ default
   });
 
   factory ExtraItem.fromJson(Map<String, dynamic> json) {
     return ExtraItem(
       name: json['name'] ?? '',
       price: (json['price'] as num).toDouble(),
+      quantity: json['quantity'] ?? 1, // ✅ NEW
     );
   }
 
   Map<String, dynamic> toJson() => {
     'name': name,
     'price': price,
+    'quantity': quantity, // ✅ NEW
   };
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is ExtraItem && other.name == name && other.price == price;
+          other is ExtraItem &&
+              other.name == name &&
+              other.price == price &&
+              other.quantity == quantity; // ✅ include
 
   @override
-  int get hashCode => name.hashCode ^ price.hashCode;
+  int get hashCode =>
+      name.hashCode ^ price.hashCode ^ quantity.hashCode;
 }
 
 /* =========================
@@ -107,8 +115,16 @@ class MyCartModel {
   -------------------- */
 
   double get totalPrice {
-    final extrasTotal = extras.fold(0.0, (s, e) => s + e.price);
-    return (finalPrice * quantity) + extrasTotal;
+    final extrasTotal = extras.fold(
+      0.0,
+          (s, e) => s + (e.price * e.quantity),
+    );
+
+    return (finalPrice * quantity) + (extrasTotal * quantity);
+  }
+
+  double get extrasTotalPerItem {
+    return extras.fold(0.0, (s, e) => s + (e.price * e.quantity));
   }
 
   /* --------------------

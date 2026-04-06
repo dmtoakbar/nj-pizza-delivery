@@ -123,12 +123,27 @@ class PizzaToppingController extends GetxController {
     final topping = allIngredients.firstWhere(
       (element) => element.image == img,
     );
-    final alreadyAdded = selectedExtras.any((e) => e.name == topping.name);
-    if (!alreadyAdded) {
-      selectedExtras.add(ExtraItem(name: topping.name, price: topping.price));
+
+    final index = selectedExtras.indexWhere((e) => e.name == topping.name);
+
+    if (index == -1) {
+      // ➕ Add new extra
+      selectedExtras.add(
+        ExtraItem(name: topping.name, price: topping.price, quantity: 1),
+      );
+    } else {
+      // 🔄 Update quantity
+      final existing = selectedExtras[index];
+
+      selectedExtras[index] = ExtraItem(
+        name: existing.name,
+        price: existing.price,
+        quantity: existing.quantity + 1,
+      );
     }
 
     // end adding extra
+    final batchId = DateTime.now().microsecondsSinceEpoch;
 
     int pieces = toppingLayer <= 3 ? 6 : 3;
     for (int i = 0; i < pieces; i++) {
@@ -141,6 +156,7 @@ class PizzaToppingController extends GetxController {
           total: pieces,
           layer: toppingLayer,
         ),
+        'bachId': batchId,
       });
     }
 
@@ -158,7 +174,49 @@ class PizzaToppingController extends GetxController {
     toppingSideWideRadius = 0.0;
   }
 
-  void removeExtra(ExtraItem extra) {
+  void decreaseExtra(ExtraItem extra) {
+    final index = selectedExtras.indexWhere((e) => e.name == extra.name);
+    if (index == -1) return;
+
+    final old = selectedExtras[index];
+
+    final topping = allIngredients.firstWhereOrNull(
+      (element) => element.name == extra.name,
+    );
+
+    if (old.quantity > 1) {
+      // ➖ Update quantity
+      selectedExtras[index] = ExtraItem(
+        name: old.name,
+        price: old.price,
+        quantity: old.quantity - 1,
+      );
+
+      // 🔥 REMOVE LAST BATCH (correct way)
+      if (topping != null) {
+        final lastBatch =
+            toppings.where((t) => t["img"] == topping.image).toList();
+
+        if (lastBatch.isNotEmpty) {
+          final last = lastBatch.last; // ✅ latest added
+
+          toppings.removeWhere(
+            (t) => t["img"] == topping.image && t["bachId"] == last["bachId"],
+          );
+        }
+      }
+    } else {
+      deleteExtra(extra);
+    }
+
+    // Reset
+    if (toppings.isEmpty) {
+      toppingLayer = 1;
+      toppingSideWideRadius = 0.0;
+    }
+  }
+
+  void deleteExtra(ExtraItem extra) {
     selectedExtras.removeWhere((e) => e.name == extra.name);
 
     // 2️⃣ Find related topping image

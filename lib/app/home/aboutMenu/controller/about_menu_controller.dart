@@ -68,8 +68,10 @@ class AboutMenuController extends GetxController {
 
   double get totalPrice {
     final pizzaToppingController = Get.find<PizzaToppingController>();
-    final extrasTotal = pizzaToppingController.selectedExtras
-        .fold<double>(0.0, (sum, e) => sum + e.price);
+    final extrasTotal = pizzaToppingController.selectedExtras.fold<double>(
+      0.0,
+          (sum, e) => sum + (e.price * e.quantity),
+    );
 
     return (selectedSizePrice + extrasTotal) * quantity.value;
   }

@@ -48,13 +48,16 @@ class OrderItem {
   }
 
 
-  double get extrasTotal {
-    return extras.fold(0.0, (sum, e) => sum + e.price);
+  double get extrasTotalPerItem {
+    return extras.fold(
+      0.0,
+          (sum, e) => sum + (e.price * e.quantity),
+    );
   }
   /// ✅ FINAL total (backend-trusted)
   double get totalPrice {
-    final itemTotal = finalPrice + extrasTotal;
-    return itemTotal * quantity;
+    return (finalPrice * quantity) +
+        (extrasTotalPerItem * quantity);
   }
 
 }
@@ -62,16 +65,21 @@ class OrderItem {
 class OrderExtra {
   final String name;
   final double price;
+  final int quantity; // ✅ ADD
 
   OrderExtra({
     required this.name,
     required this.price,
+    required this.quantity,
   });
 
   factory OrderExtra.fromJson(Map<String, dynamic> json) {
     return OrderExtra(
-      name: json['extra_name'] ?? '',
-      price: double.tryParse(json['extra_price'].toString()) ?? 0.0,
+      name: json['name'] ?? json['extra_name'] ?? '',
+      price: double.tryParse(
+          (json['price'] ?? json['extra_price']).toString()) ??
+          0.0,
+      quantity: int.tryParse(json['quantity'].toString()) ?? 1, // ✅ ADD
     );
   }
 }

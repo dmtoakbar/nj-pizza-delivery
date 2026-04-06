@@ -211,6 +211,14 @@ class CartScreen extends GetView<CartController> {
                           ),
                           const SizedBox(height: 4),
                           Text(
+                            'Price: \$${item.finalPrice}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
                             'Size: ${item.size}',
                             style: const TextStyle(
                               fontSize: 12,
@@ -221,18 +229,17 @@ class CartScreen extends GetView<CartController> {
                           Wrap(
                             spacing: 8,
                             runSpacing: 4,
-                            children:
-                                item.extras
-                                    .map(
-                                      (extra) => Text(
-                                        "• ${extra.name} (+\$${extra.price.toStringAsFixed(2)})",
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 13,
-                                          color: Colors.grey.shade700,
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
+                            children: item.extras.map((extra) {
+                              final totalExtraPrice = extra.price * extra.quantity;
+
+                              return Text(
+                                "• ${extra.name} x ${extra.quantity} ( \$${totalExtraPrice.toStringAsFixed(2)} each )",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  color: Colors.grey.shade700,
+                                ),
+                              );
+                            }).toList(),
                           ),
                           const SizedBox(height: 6),
                           Text(

@@ -57,15 +57,13 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
               children: [
                 Stack(
                   clipBehavior: Clip.none,
-                  children: [
-                    _topBar(),
-                    ProductPackingAnimation()
-                  ],
+                  children: [_topBar(), ProductPackingAnimation()],
                 ),
 
                 Obx(() {
                   final product = controller.product.value;
-                  if (product == null) return Center(child: Text('No Product found'));
+                  if (product == null)
+                    return Center(child: Text('No Product found'));
                   return Expanded(
                     child: SingleChildScrollView(
                       controller: controller.scrollController,
@@ -122,6 +120,25 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
           const Spacer(),
+          Obx(() {
+            final product = controller.product.value;
+            if (product == null) return const SizedBox();
+            final isFav = favController.favorites.any(
+                  (p) => p.id == product.id,
+            );
+
+            return GestureDetector(
+              onTap: () {
+                Get.toNamed(Routes.MYFAVORITE);
+              },
+              child: Icon(
+                isFav ? Icons.favorite : Icons.favorite_border,
+                color: Colors.red,
+                size: 28,
+              ),
+            );
+          }),
+          SizedBox(width: 10),
           Row(
             children: [
               Obx(() {
@@ -175,25 +192,6 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
               }),
             ],
           ),
-          SizedBox(width: 10),
-          Obx(() {
-            final product = controller.product.value;
-            if (product == null) return const SizedBox();
-            final isFav = favController.favorites.any(
-              (p) => p.id == product.id,
-            );
-
-            return GestureDetector(
-              onTap: () {
-                Get.toNamed(Routes.MYFAVORITE);
-              },
-              child: Icon(
-                isFav ? Icons.favorite : Icons.favorite_border,
-                color: Colors.red,
-                size: 28,
-              ),
-            );
-          }),
         ],
       ),
     );
@@ -575,57 +573,36 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
         (e) => e.name == name,
       );
       final selected = pizzaToppingController.selectedIndex.value == index;
-      return AbsorbPointer(
-        absorbing: isAdded,
-        child: LongPressDraggable(
-          delay: const Duration(milliseconds: 100),
-          data: img,
-          feedback: _imageCacheNetwork(imageUrl: img, width: 40),
-
-          childWhenDragging: Opacity(
-            opacity: 0.3,
-            child: _imageCacheNetwork(imageUrl: img, width: 40),
-          ),
-          onDragStarted: () {
-            pizzaToppingController.selectIndex(index);
-          },
-          child: GestureDetector(
-            onTap: () {
-              pizzaToppingController.selectIndex(index);
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 45,
-              height: 45,
-              decoration: BoxDecoration(
-                color: isAdded ? const Color(0xFFEB5525) : Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color:
-                      selected && !isAdded
-                          ? const Color(0xFFEB5525)
-                          : Colors.transparent,
-                  width: 2,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Center(
-                child: _imageCacheNetwork(imageUrl: img, width: 30, height: 30),
-              ),
+      return GestureDetector(
+        onTap: () {
+          pizzaToppingController.selectIndex(index);
+          pizzaToppingController.addBurstToppings(img);
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: 45,
+          height: 45,
+          decoration: BoxDecoration(
+            color: isAdded ? const Color(0xFFEB5525) : Colors.white,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color:
+                  selected && !isAdded
+                      ? const Color(0xFFEB5525)
+                      : Colors.transparent,
+              width: 2,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
-          onDragEnd: (details) {
-            final pos = details.offset + const Offset(25, 25);
-            if (pizzaToppingController.isInsidePizza(pos)) {
-              pizzaToppingController.addBurstToppings(img);
-            }
-          },
+          child: Center(
+            child: _imageCacheNetwork(imageUrl: img, width: 30, height: 30),
+          ),
         ),
       );
     });
@@ -673,7 +650,7 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
 
   Widget _bottomBar() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -696,119 +673,229 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
           children: [
             /// 🔽 SELECTED EXTRAS LIST
             if (extras.isNotEmpty)
-              Align(
-                alignment: AlignmentGeometry.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 6,
-                    children:
-                        extras.map((extra) {
-                          return InputChip(
-                            label: Text(
-                              "${extra.name} (+\$${extra.price.toStringAsFixed(2)})",
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 200),
+                child: Scrollbar(
+                  thumbVisibility: true,
+                  child: ListView.separated(
+                    reverse: true,
+                    padding: const EdgeInsets.only(bottom: 8),
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    physics: BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final extra = extras[index];
+                      return Container(
+                        margin: EdgeInsets.only(right: 10),
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(22),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    extra.name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 4),
+                                Text("x", style: const TextStyle(fontSize: 11)),
+                                SizedBox(width: 4),
+                                Text(
+                                  "( \$${(extra.price).toStringAsFixed(2)} each )",
+                                  style: const TextStyle(fontSize: 11),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 4),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  _circleBtn(
+                                    icon: Icons.remove,
+                                    color: Colors.grey.shade300,
+                                    iconColor: Colors.black,
+                                    onTap:
+                                        () => pizzaToppingController
+                                            .decreaseExtra(extra),
+                                  ),
+                  
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                    ),
+                                    child: Text(
+                                      "${extra.quantity} Topping",
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                  
+                                  /// ➕
+                                  _circleBtn(
+                                    icon: Icons.add,
+                                    color: const Color(0xFFEB5525),
+                                    iconColor: Colors.white,
+                                    onTap: () {
+                                      final ingredient = pizzaToppingController
+                                          .allIngredients
+                                          .firstWhereOrNull(
+                                            (e) => e.name == extra.name,
+                                          );
+                  
+                                      if (ingredient != null) {
+                                        pizzaToppingController.addBurstToppings(
+                                          ingredient.image,
+                                        );
+                                      }
+                                    },
+                                  ),
+                  
+                                  const SizedBox(width: 8),
+                  
+                                  GestureDetector(
+                                    onTap:
+                                        () => pizzaToppingController.deleteExtra(
+                                          extra,
+                                        ),
+                                    child: const Icon(
+                                      Icons.delete,
+                                      size: 16,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            onDeleted: () {
-                              pizzaToppingController.removeExtra(extra);
-                            },
-                            deleteIcon: const Icon(Icons.close, size: 16),
-                            deleteIconColor: Colors.red,
-                            backgroundColor: Colors.grey.shade100,
-                            shape: StadiumBorder(
-                              side: BorderSide(color: Colors.grey.shade300),
-                            ),
-                          );
-                        }).toList(),
+                          ],
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) => SizedBox(height: 6),
+                    itemCount: extras.length,
                   ),
                 ),
               ),
 
             /// 🔽 TOTAL + BUTTON ROW
-            Row(
-              children: [
-                // -------- LEFT TOTAL --------
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Total Order: ${controller.quantity.value}',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+              child: Row(
+                children: [
+                  // -------- LEFT TOTAL --------
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Total Order: ${controller.quantity.value}',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '\$${controller.totalPrice.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const Spacer(),
+
+                  // -------- ADD TO CART BUTTON --------
+                  ElevatedButton(
+                    onPressed: () async {
+                      await controller.scrollToZero(animated: true);
+                      await productPackingAnimation.startPackingAnimation();
+                      final product = controller.product.value;
+                      if (product == null) return;
+                      cart.addItem(
+                        MyCartModel(
+                          productId: product.id.toString(),
+                          name: product.name,
+                          image: product.image,
+                          size: controller.selectedSize.value,
+                          quantity: controller.quantity.value,
+                          basePrice: product.basePrice.toDouble(),
+                          discountPercentage:
+                              product.discountPercentage.toDouble(),
+                          finalPrice:
+                              product.basePrice *
+                              (1 - product.discountPercentage / 100),
+
+                          extras: pizzaToppingController.selectedExtras.toList(),
+                        ),
+                      );
+                      pizzaToppingController.selectedExtras.clear();
+                      Get.toNamed(Routes.CART);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFEB5525),
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 34,
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '\$${controller.totalPrice.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 18,
+                    child: const Text(
+                      'Add To Cart',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ],
-                ),
-
-                const Spacer(),
-
-                // -------- ADD TO CART BUTTON --------
-                ElevatedButton(
-                  onPressed: () async {
-                    await controller.scrollToZero(animated: true);
-                    await productPackingAnimation.startPackingAnimation();
-                    final product = controller.product.value;
-                    if (product == null) return;
-                    cart.addItem(
-                      MyCartModel(
-                        productId: product.id.toString(),
-                        name: product.name,
-                        image: product.image,
-                        size: controller.selectedSize.value,
-                        quantity: controller.quantity.value,
-                        basePrice: product.basePrice.toDouble(),
-                        discountPercentage:
-                            product.discountPercentage.toDouble(),
-                        finalPrice:
-                            product.basePrice *
-                            (1 - product.discountPercentage / 100),
-
-                        extras: pizzaToppingController.selectedExtras.toList(),
-                      ),
-                    );
-                    pizzaToppingController.selectedExtras.clear();
-                    Get.toNamed(Routes.CART);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFEB5525),
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 34,
-                      vertical: 16,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
                   ),
-                  child: const Text(
-                    'Add To Cart',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         );
       }),
+    );
+  }
+
+  Widget _circleBtn({
+    required IconData icon,
+    required Color color,
+    required Color iconColor,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 22,
+        width: 22,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        child: Icon(icon, size: 14, color: iconColor),
+      ),
     );
   }
 }

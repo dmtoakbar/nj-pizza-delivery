@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:nj_pizza_delivery/app/home/myFavourite/widgets/favourite_card_widget.dart';
 import '../../../routes/app_routes.dart';
+import '../aboutMenu/controller/pizza_topping_controller.dart';
 import '../widgets/appBar/header.dart';
 import '../widgets/appBar/widgets/side_bar.dart';
 import '../widgets/bottomAppBar/animated_bottom_nav.dart';
@@ -53,6 +54,9 @@ class FavoritesScreen extends StatelessWidget {
                         product: product,
                         onRemove: () => controller.removeFavorite(product.id),
                         onTap: () {
+                          if (Get.isRegistered<PizzaToppingController>()) {
+                            Get.delete<PizzaToppingController>();
+                          }
                           final productModel = product.toProductModel();
                           Get.toNamed(
                             Routes.ABOUTMENU,
