@@ -141,7 +141,7 @@ class SpecificCategoryProductsScreen
           crossAxisCount: 2,
           mainAxisSpacing: 14,
           crossAxisSpacing: 14,
-          mainAxisExtent: 280,
+          mainAxisExtent: 300,
         ),
         itemBuilder: (_, index) {
           if (index >= controller.products.length) {

@@ -15,6 +15,7 @@ import '../../../routes/app_routes.dart';
 import '../cart/controller/cart_controller.dart';
 import '../cart/model/cart_item.dart';
 import '../myFavourite/controller/my_favourite_controller.dart';
+import '../productReviews/product_reviews.dart';
 import 'controller/pizza_topping_controller.dart';
 
 class AboutMenuScreen extends GetView<AboutMenuController> {
@@ -124,7 +125,7 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
             final product = controller.product.value;
             if (product == null) return const SizedBox();
             final isFav = favController.favorites.any(
-                  (p) => p.id == product.id,
+              (p) => p.id == product.id,
             );
 
             return GestureDetector(
@@ -474,17 +475,12 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
             ),
 
-            const SizedBox(height: 10),
-
-            // rating
-            // Row(
-            //   children: [
-            //     const Icon(Icons.star, color: Colors.orange, size: 16),
-            //     const SizedBox(width: 4),
-            //     const Text('4.9', style: TextStyle(fontWeight: FontWeight.w500)),
-            //   ],
-            // ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
+            ProductReviewSection(
+              productId: product.id.toString(),
+              reviewsCount: true,
+            ),
+            const SizedBox(height: 22),
             // ---------- RATING + PRICE + QTY ----------
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -516,7 +512,8 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
               style: TextStyle(color: Colors.grey, height: 1.5),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 22),
+            ProductReviewSection(productId: product.id.toString()),
           ],
         ),
       );
@@ -735,7 +732,7 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
                                         () => pizzaToppingController
                                             .decreaseExtra(extra),
                                   ),
-                  
+
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 6,
@@ -748,7 +745,7 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
                                       ),
                                     ),
                                   ),
-                  
+
                                   /// ➕
                                   _circleBtn(
                                     icon: Icons.add,
@@ -760,7 +757,7 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
                                           .firstWhereOrNull(
                                             (e) => e.name == extra.name,
                                           );
-                  
+
                                       if (ingredient != null) {
                                         pizzaToppingController.addBurstToppings(
                                           ingredient.image,
@@ -768,14 +765,13 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
                                       }
                                     },
                                   ),
-                  
+
                                   const SizedBox(width: 8),
-                  
+
                                   GestureDetector(
                                     onTap:
-                                        () => pizzaToppingController.deleteExtra(
-                                          extra,
-                                        ),
+                                        () => pizzaToppingController
+                                            .deleteExtra(extra),
                                     child: const Icon(
                                       Icons.delete,
                                       size: 16,
@@ -847,7 +843,8 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
                               product.basePrice *
                               (1 - product.discountPercentage / 100),
 
-                          extras: pizzaToppingController.selectedExtras.toList(),
+                          extras:
+                              pizzaToppingController.selectedExtras.toList(),
                         ),
                       );
                       pizzaToppingController.selectedExtras.clear();
