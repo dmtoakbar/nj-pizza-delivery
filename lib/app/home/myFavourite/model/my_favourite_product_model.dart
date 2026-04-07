@@ -6,6 +6,8 @@ class MyFavouriteProductModel {
   final String categoryId;
   final String name;
   final String description;
+  final double avgRating;
+  final int totalReviews;
 
   /// Stored sizes snapshot (S, M, L)
   final Map<String, double> sizes;
@@ -35,6 +37,8 @@ class MyFavouriteProductModel {
     required this.image,
     required this.isPopular,
     required this.isFeatured,
+    required this.avgRating,
+    required this.totalReviews,
   });
 
   factory MyFavouriteProductModel.fromJson(Map<String, dynamic> json) {
@@ -64,6 +68,8 @@ class MyFavouriteProductModel {
       image: json['image'] ?? '',
       isPopular: json['is_popular'] == true || json['is_popular'] == 1,
       isFeatured: json['is_featured'] == true || json['is_featured'] == 1,
+      avgRating: _toDouble(json['avg_rating']),
+      totalReviews: _toInt(json['total_reviews']),
     );
   }
 }
@@ -83,6 +89,8 @@ extension ProductModelExtension on ProductModel {
       image: image,
       isPopular: isPopular,
       isFeatured: isFeatured,
+      avgRating: avgRating,
+      totalReviews: totalReviews
     );
   }
 }
@@ -102,7 +110,21 @@ extension MyFavouriteProductModelExtension on MyFavouriteProductModel {
       image: image,
       isPopular: isPopular,
       isFeatured: isFeatured,
+      avgRating: avgRating,
+      totalReviews: totalReviews,
     );
   }
+}
+
+double _toDouble(dynamic value) {
+  if (value == null) return 0.0;
+  if (value is num) return value.toDouble();
+  return double.tryParse(value.toString()) ?? 0.0;
+}
+
+int _toInt(dynamic value) {
+  if (value == null) return 0;
+  if (value is num) return value.toInt();
+  return int.tryParse(value.toString()) ?? 0;
 }
 

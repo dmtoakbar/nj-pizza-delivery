@@ -72,7 +72,7 @@ Widget productCard(ProductModel product) {
                   return GestureDetector(
                     onTap:
                         () =>
-                        favController.toggleFavorite(product.toFavorite()),
+                            favController.toggleFavorite(product.toFavorite()),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       padding: const EdgeInsets.all(6),
@@ -115,6 +115,16 @@ Widget productCard(ProductModel product) {
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
                 ),
+              ),
+              Row(
+                children: [
+                  _buildRatingStars(product.avgRating),
+                  const SizedBox(width: 6),
+                  Text(
+                    product.avgRating.toStringAsFixed(1),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ],
               ),
               SizedBox(height: 4),
               Text(
@@ -181,5 +191,19 @@ Widget productCard(ProductModel product) {
         ),
       ],
     ),
+  );
+}
+
+Widget _buildRatingStars(double rating) {
+  return Row(
+    children: List.generate(5, (index) {
+      if (index < rating.floor()) {
+        return const Icon(Icons.star, color: Colors.orange, size: 16);
+      } else if (index < rating) {
+        return const Icon(Icons.star_half, color: Colors.orange, size: 16);
+      } else {
+        return const Icon(Icons.star_border, color: Colors.orange, size: 16);
+      }
+    }),
   );
 }

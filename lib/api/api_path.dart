@@ -25,4 +25,7 @@ class ApiPath {
   static final getUnreadCountNotification = 'get-unread-count';
   static final getNotificationList = 'get-notifications';
   static final markNotificationRead = 'mark-notification-read';
+  static final addProductReview = 'add-product-review';
+  static final getProductReview = 'get-product-review';
+  static final getProductRatingSummary = 'get-product-rating-summary';
 }
