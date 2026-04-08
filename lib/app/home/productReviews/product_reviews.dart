@@ -18,7 +18,7 @@ class ProductReviewSection extends StatelessWidget {
 
     return Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Center();
       }
 
       /// ⭐ ONLY RATING

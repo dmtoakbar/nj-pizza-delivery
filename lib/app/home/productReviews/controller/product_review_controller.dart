@@ -125,8 +125,6 @@ class ProductReviewController extends GetxController {
 
       if (res.data['success'] == true) {
         AppToast.success(res.data['message'] ?? "Review submitted");
-
-        fetchAll();
       } else {
         AppToast.error(res.data['message'] ?? "Failed");
       }
