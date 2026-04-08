@@ -124,18 +124,55 @@ class ResetPasswordScreen extends StatelessWidget {
                             const SizedBox(height: 30),
 
                             /// Password Field
-                            AppTextField(
-                              controller: controller.passwordController,
-                              hintText: "Password",
-                              obscureText: true,
+                            Obx(
+                              () => AppTextField(
+                                controller: controller.passwordController,
+                                hintText: "Password",
+                                obscureText:
+                                    controller.isPasswordHidden.value
+                                        ? true
+                                        : false,
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    controller.isPasswordHidden.value =
+                                        !controller.isPasswordHidden.value;
+                                  },
+                                  icon: Icon(
+                                    controller.isPasswordHidden.value
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: Color(0xFFEB5525),
+                                  ),
+                                ),
+                              ),
                             ),
 
                             const SizedBox(height: 30),
 
-                            AppTextField(
-                              controller: controller.confirmPasswordController,
-                              hintText: "Confirm Password",
-                              obscureText: true,
+                            Obx(
+                              () => AppTextField(
+                                controller:
+                                    controller.confirmPasswordController,
+                                hintText: "Confirm Password",
+                                obscureText:
+                                    controller.isConfirmPasswordHidden.value
+                                        ? true
+                                        : false,
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    controller.isConfirmPasswordHidden.value =
+                                        !controller
+                                            .isConfirmPasswordHidden
+                                            .value;
+                                  },
+                                  icon: Icon(
+                                    controller.isConfirmPasswordHidden.value
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: Color(0xFFEB5525),
+                                  ),
+                                ),
+                              ),
                             ),
 
                             const SizedBox(height: 30),
