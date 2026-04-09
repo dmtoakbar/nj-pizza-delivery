@@ -110,48 +110,69 @@ class PizzaRegistrationScreen extends GetView<RegistrationController> {
                             controller: controller.addressController,
                             hintText: "Delivery Address",
                             keyboardType: TextInputType.streetAddress,
+                            readOnly: true,
+                            autoExpandMaxLines: true,
+                            onTap: () async {
+                              FocusScope.of(context).unfocus();
+                              final result = await Get.toNamed(
+                                Routes.MAPSEARCHADDRESS,
+                              );
+                              if (result != null) {
+                                controller.addressController.text = result;
+                              }
+                            },
                           ),
 
                           const SizedBox(height: 30),
 
                           /// Password Field
-                         Obx(() =>  AppTextField(
-                           controller: controller.passwordController,
-                           hintText: "Password",
-                           obscureText: controller.isPasswordHidden.value ? true : false,
-                           suffixIcon: IconButton(
-                             onPressed: () {
-                               controller.isPasswordHidden.value =
-                               !controller.isPasswordHidden.value;
-                             },
-                             icon: Icon(
-                               controller.isPasswordHidden.value
-                                   ? Icons.visibility_off
-                                   : Icons.visibility,
-                               color: Color(0xFFEB5525),
-                             ),
-                           ),
-                         )),
+                          Obx(
+                            () => AppTextField(
+                              controller: controller.passwordController,
+                              hintText: "Password",
+                              obscureText:
+                                  controller.isPasswordHidden.value
+                                      ? true
+                                      : false,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  controller.isPasswordHidden.value =
+                                      !controller.isPasswordHidden.value;
+                                },
+                                icon: Icon(
+                                  controller.isPasswordHidden.value
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: Color(0xFFEB5525),
+                                ),
+                              ),
+                            ),
+                          ),
 
                           const SizedBox(height: 30),
 
-                          Obx(() => AppTextField(
-                            controller: controller.confirmPasswordController,
-                            hintText: "Confirm Password",
-                            obscureText: controller.isConfirmPasswordHidden.value ? true : false,
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                controller.isConfirmPasswordHidden.value =
-                                !controller.isConfirmPasswordHidden.value;
-                              },
-                              icon: Icon(
-                                controller.isConfirmPasswordHidden.value
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                                color: Color(0xFFEB5525),
+                          Obx(
+                            () => AppTextField(
+                              controller: controller.confirmPasswordController,
+                              hintText: "Confirm Password",
+                              obscureText:
+                                  controller.isConfirmPasswordHidden.value
+                                      ? true
+                                      : false,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  controller.isConfirmPasswordHidden.value =
+                                      !controller.isConfirmPasswordHidden.value;
+                                },
+                                icon: Icon(
+                                  controller.isConfirmPasswordHidden.value
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: Color(0xFFEB5525),
+                                ),
                               ),
                             ),
-                          )),
+                          ),
 
                           Spacer(),
 

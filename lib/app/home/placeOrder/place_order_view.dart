@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nj_pizza_delivery/app/auth/widgets/app_text_field.dart';
 import 'package:nj_pizza_delivery/app/home/cart/controller/cart_controller.dart';
 import 'package:nj_pizza_delivery/utils/app_toast.dart';
+import '../../../routes/app_routes.dart';
 import 'controller/place_order_controller.dart';
 import 'model/address_model.dart';
 
@@ -289,6 +290,9 @@ class PlaceOrderView extends StatelessWidget {
     String label = '',
     TextInputType type = TextInputType.text,
     int maxLines = 1,
+    bool readOnly = false,
+    final bool autoExpandMaxLines = false,
+    final VoidCallback? onTap,
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 14),
     child: AppTextField(
@@ -296,6 +300,9 @@ class PlaceOrderView extends StatelessWidget {
       hintText: label,
       keyboardType: type,
       maxLines: maxLines,
+      readOnly: readOnly,
+      autoExpandMaxLines: autoExpandMaxLines,
+      onTap: onTap,
     ),
   );
 
@@ -443,7 +450,15 @@ class PlaceOrderView extends StatelessWidget {
               _sheetInput(
                 c.addressController,
                 label: "Full Address",
-                maxLines: 1,
+                readOnly: true,
+                autoExpandMaxLines: true,
+                onTap: () async {
+                  FocusScope.of(Get.context!).unfocus();
+                  final result = await Get.toNamed(Routes.MAPSEARCHADDRESS);
+                  if (result != null) {
+                    c.addressController.text = result;
+                  }
+                },
               ),
 
               const SizedBox(height: 20),
@@ -457,7 +472,7 @@ class PlaceOrderView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  onPressed:  () {
+                  onPressed: () {
                     if (c.addressNameController.text.trim().isEmpty) {
                       AppToast.error('Please enter full name');
                       return;
@@ -501,5 +516,4 @@ class PlaceOrderView extends StatelessWidget {
       ),
     );
   }
-
 }

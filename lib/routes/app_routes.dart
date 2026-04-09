@@ -22,13 +22,11 @@ abstract class Routes {
   static const CANCELLATION_POLICY = _Paths.CANCELLATION_POLICY;
   static const ABOUT_US = _Paths.ABOUT_US;
   static const FAQ = _Paths.FAQ;
-
-  // new
   static const ABOUTMENU = _Paths.ABOUTMENU;
   static const SPECIFICATPRODUCTS = _Paths.SPECIFICATPRODUCTS;
   static const ALLCATPRODUCTS = _Paths.ALLCATPRODUCTS;
-
   static const MYFAVORITE = _Paths.MYFAVORITE;
+  static const MAPSEARCHADDRESS = _Paths.MAPSEARCHADDRESS;
 }
 
 abstract class _Paths {
@@ -53,11 +51,9 @@ abstract class _Paths {
   static const CANCELLATION_POLICY = '/cancellation-policy';
   static const ABOUT_US = '/about-us';
   static const FAQ = '/faq';
-
-  // new
   static const ABOUTMENU = '/about-menu';
   static const SPECIFICATPRODUCTS = '/specific-cat-products';
   static const ALLCATPRODUCTS = '/all-cat-products';
-
   static const MYFAVORITE = '/my-favourite';
+  static const MAPSEARCHADDRESS = '/map-search-address';
 }

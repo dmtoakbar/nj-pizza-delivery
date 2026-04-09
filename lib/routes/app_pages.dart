@@ -38,6 +38,8 @@ import 'package:nj_pizza_delivery/app/home/report/binding/report_controller_bind
 import 'package:nj_pizza_delivery/app/home/report/report.dart';
 import 'package:nj_pizza_delivery/app/home/specifyCategoryProducts/binding/specific_category_products_controller_binding.dart';
 import 'package:nj_pizza_delivery/app/home/specifyCategoryProducts/specific_category_products.dart';
+import 'package:nj_pizza_delivery/app/mapAndSearchAddress/binding/map_search_controller_binding.dart';
+import 'package:nj_pizza_delivery/app/mapAndSearchAddress/map_search_screen.dart';
 import 'package:nj_pizza_delivery/app/onboard/binding/onboard_controller_binding.dart';
 import 'package:nj_pizza_delivery/app/onboard/onboard_view.dart';
 import 'package:nj_pizza_delivery/app/splash/binding/splash_controller_binding.dart';
@@ -163,6 +165,11 @@ class AppPages {
       name: Routes.ALLCATPRODUCTS,
       page: () => AllCategoryProductsScreen(),
       binding: AllCategoryProductsControllerBinding(),
+    ),
+    GetPage(
+        name: Routes.MAPSEARCHADDRESS,
+        page: () => MapSearchScreen(),
+        binding: MapSearchControllerBinding()
     ),
   ];
 }

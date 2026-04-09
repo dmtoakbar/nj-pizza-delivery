@@ -8,6 +8,8 @@ class AppTextField extends StatelessWidget {
   final bool readOnly;
   final int maxLines;
   final IconButton? suffixIcon;
+  final VoidCallback? onTap;
+  final bool autoExpandMaxLines;
 
   const AppTextField({
     super.key,
@@ -18,6 +20,8 @@ class AppTextField extends StatelessWidget {
     this.readOnly = false,
     this.maxLines = 1,
     this.suffixIcon,
+    this.onTap,
+    this.autoExpandMaxLines = false,
   });
 
   @override
@@ -28,8 +32,10 @@ class AppTextField extends StatelessWidget {
       obscureText: obscureText,
       readOnly: readOnly,
       textAlign: TextAlign.left,
-      maxLines: maxLines,
+      maxLines: autoExpandMaxLines ? null : maxLines,
+      minLines: autoExpandMaxLines ? 1 : null,
       textAlignVertical: TextAlignVertical.center,
+      onTap: onTap,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 10),
         hintText: hintText,
