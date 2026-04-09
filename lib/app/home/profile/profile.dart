@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:nj_pizza_delivery/app/auth/widgets/app_text_field.dart';
 import 'package:nj_pizza_delivery/app/home/profile/controller/profile_controller.dart';
 import 'package:nj_pizza_delivery/app/home/widgets/appBar/header.dart';
+import '../../../routes/app_routes.dart';
 import '../widgets/appBar/widgets/side_bar.dart';
 import '../widgets/bottomAppBar/animated_bottom_nav.dart';
 
@@ -97,6 +98,17 @@ class ProfileScreen extends StatelessWidget {
                             controller: controller.addressController,
                             hintText: "Delivery Address",
                             keyboardType: TextInputType.streetAddress,
+                            readOnly: true,
+                            autoExpandMaxLines: true,
+                            onTap: () async {
+                              FocusScope.of(context).unfocus();
+                              final result = await Get.toNamed(
+                                Routes.MAPSEARCHADDRESS,
+                              );
+                              if (result != null) {
+                                controller.addressController.text = result;
+                              }
+                            },
                           ),
 
                           const SizedBox(height: 30),
