@@ -222,7 +222,7 @@ class AllCategoryProductsScreen extends GetView<AllCategoryProductsController> {
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              mainAxisExtent: 300,
+              mainAxisExtent: 311,
             ),
             itemBuilder: (_, i) => productCard(products[i]),
           ),
@@ -262,7 +262,7 @@ class AllCategoryProductsScreen extends GetView<AllCategoryProductsController> {
             crossAxisCount: 2,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            mainAxisExtent: 300,
+            mainAxisExtent: 311,
           ),
           itemBuilder:
               (_, i) => productCard(searchController.searchProducts[i]),

@@ -235,7 +235,7 @@ class HomeScreen extends GetView<HomeController> {
           crossAxisCount: 2,
           mainAxisSpacing: 14,
           crossAxisSpacing: 14,
-          mainAxisExtent: 300,
+          mainAxisExtent: 311,
         ),
         itemBuilder: (_, index) {
           final product = searchController.allProducts[index];
@@ -271,7 +271,7 @@ class HomeScreen extends GetView<HomeController> {
           mainAxisSpacing: 14,
           crossAxisSpacing: 14,
           childAspectRatio: 0.72,
-          mainAxisExtent: 300,
+          mainAxisExtent: 311,
         ),
         itemBuilder: (_, index) {
           final product = controller.allProducts[index];

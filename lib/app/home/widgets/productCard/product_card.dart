@@ -42,11 +42,13 @@ Widget productCard(ProductModel product) {
             child: Stack(
               children: [
                 /// IMAGE
-                AspectRatio(
-                  aspectRatio: 1.2,
-                  child: CachedNetworkImage(
-                    imageUrl: product.image,
-                    fit: BoxFit.cover,
+                Center(
+                  child: SizedBox(
+                     height: 140,
+                    child: CachedNetworkImage(
+                      imageUrl: product.image,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
 
