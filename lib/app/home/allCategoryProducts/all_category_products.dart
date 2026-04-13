@@ -233,41 +233,34 @@ class AllCategoryProductsScreen extends GetView<AllCategoryProductsController> {
 
   // search product or list
   Widget _searchProduct() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
-      child: Obx(() {
-        if (searchController.isLoading.value) {
-          return Center(
-            child: Padding(
-              padding: EdgeInsetsGeometry.only(top: Get.height * .3),
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-
-        if (searchController.searchProducts.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: EdgeInsetsGeometry.only(top: Get.height * .3),
-              child: Text('No products found'),
-            ),
-          );
-        }
-        return GridView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: searchController.searchProducts.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            mainAxisExtent: 311,
-          ),
-          itemBuilder:
-              (_, i) => productCard(searchController.searchProducts[i]),
+    return Obx(() {
+      if (searchController.isLoading.value) {
+        return Center(
+          child: CircularProgressIndicator(),
         );
-      }),
-    );
+      }
+    
+      if (searchController.searchProducts.isEmpty) {
+        return Center(
+          child: Padding(
+            padding: EdgeInsetsGeometry.only(top: Get.height * .3),
+            child: Text('No products found'),
+          ),
+        );
+      }
+      return GridView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        shrinkWrap: true,
+        itemCount: searchController.searchProducts.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          mainAxisExtent: 311,
+        ),
+        itemBuilder:
+            (_, i) => productCard(searchController.searchProducts[i]),
+      );
+    });
   }
 }
