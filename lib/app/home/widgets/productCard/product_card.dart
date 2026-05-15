@@ -44,7 +44,7 @@ Widget productCard(ProductModel product) {
                 /// IMAGE
                 Center(
                   child: SizedBox(
-                     height: 140,
+                    height: 140,
                     child: CachedNetworkImage(
                       imageUrl: product.image,
                       fit: BoxFit.cover,
@@ -85,8 +85,9 @@ Widget productCard(ProductModel product) {
 
                     return GestureDetector(
                       onTap:
-                          () =>
-                              favController.toggleFavorite(product.toFavorite()),
+                          () => favController.toggleFavorite(
+                            product.toFavorite(),
+                          ),
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         padding: const EdgeInsets.all(6),

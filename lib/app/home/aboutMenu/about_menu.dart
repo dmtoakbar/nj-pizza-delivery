@@ -72,19 +72,26 @@ class AboutMenuScreen extends GetView<AboutMenuController> {
                         children: [
                           const SizedBox(height: 20),
                           _pizzaImage(),
-                          Transform.translate(
-                            offset: const Offset(0, -90), // 👈 pull it upward
-                            child: _yourCurvedIngredientWidget(),
-                          ), // space for curve
-                          Transform.translate(
-                            offset: const Offset(0, -80),
-                            child: _sizeSelector(),
-                          ),
+                          if (controller.product?.value?.showToppings == 1)
+                            Transform.translate(
+                              offset: const Offset(0, -90), // 👈 pull it upward
+                              child: _yourCurvedIngredientWidget(),
+                            ), // space for curve
+                          if (controller.product?.value?.showSizes == 1)
+                            Transform.translate(
+                              offset: const Offset(0, -80),
+                              child: _sizeSelector(),
+                            ),
 
-                          Transform.translate(
-                            offset: const Offset(0, -60),
-                            child: _infoSection(),
-                          ),
+                          controller.product?.value?.showSizes == 1
+                              ? Transform.translate(
+                                offset: Offset(0, -60),
+                                child: _infoSection(),
+                              )
+                              : Padding(
+                                padding: const EdgeInsets.only(top: 80.0),
+                                child: _infoSection(),
+                              ),
                         ],
                       ),
                     ),

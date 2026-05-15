@@ -8,6 +8,9 @@ class ProductModel {
   final double avgRating;
   final int totalReviews;
 
+  final int? showToppings;
+  final int? showSizes;
+
   /// All size prices (S, M, L)
   final Map<String, double> sizes;
 
@@ -38,6 +41,8 @@ class ProductModel {
     required this.isFeatured,
     required this.avgRating,
     required this.totalReviews,
+    this.showToppings,
+    this.showSizes,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -75,6 +80,9 @@ class ProductModel {
 
       avgRating: _toDouble(json['avg_rating']),
       totalReviews: _toInt(json['total_reviews']),
+      showToppings: _toNullableInt(json['show_toppings']),
+
+      showSizes: _toNullableInt(json['show_sizes']),
     );
   }
 }
@@ -89,4 +97,14 @@ int _toInt(dynamic value) {
   if (value == null) return 0;
   if (value is num) return value.toInt();
   return int.tryParse(value.toString()) ?? 0;
+}
+
+int? _toNullableInt(dynamic value) {
+  if (value == null) return null;
+
+  if (value is num) {
+    return value.toInt();
+  }
+
+  return int.tryParse(value.toString());
 }

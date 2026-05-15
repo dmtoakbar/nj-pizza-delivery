@@ -1,4 +1,3 @@
-
 import '../../home/model/product-model.dart';
 
 class MyFavouriteProductModel {
@@ -25,6 +24,9 @@ class MyFavouriteProductModel {
   final bool isPopular;
   final bool isFeatured;
 
+  final int? showSizes;
+  final int? showToppings;
+
   MyFavouriteProductModel({
     required this.id,
     required this.categoryId,
@@ -39,22 +41,23 @@ class MyFavouriteProductModel {
     required this.isFeatured,
     required this.avgRating,
     required this.totalReviews,
+    this.showSizes,
+    this.showToppings,
   });
 
   factory MyFavouriteProductModel.fromJson(Map<String, dynamic> json) {
-    final Map<String, double> sizes =
-    (json['sizes'] as Map<String, dynamic>).map(
-          (key, value) => MapEntry(key, (value as num).toDouble()),
-    );
+    final Map<String, double> sizes = (json['sizes'] as Map<String, dynamic>)
+        .map((key, value) => MapEntry(key, (value as num).toDouble()));
 
     final double discountPercentage =
         (json['discount_percentage'] as num?)?.toDouble() ?? 0.0;
 
     final double mediumPrice = sizes['M'] ?? 0.0;
 
-    final double finalPrice = discountPercentage > 0
-        ? mediumPrice - (mediumPrice * discountPercentage / 100)
-        : mediumPrice;
+    final double finalPrice =
+        discountPercentage > 0
+            ? mediumPrice - (mediumPrice * discountPercentage / 100)
+            : mediumPrice;
 
     return MyFavouriteProductModel(
       id: json['id'],
@@ -70,10 +73,13 @@ class MyFavouriteProductModel {
       isFeatured: json['is_featured'] == true || json['is_featured'] == 1,
       avgRating: _toDouble(json['avg_rating']),
       totalReviews: _toInt(json['total_reviews']),
+      showSizes: json['show_sizes'] != null ? _toInt(json['show_sizes']) : null,
+
+      showToppings:
+          json['show_toppings'] != null ? _toInt(json['show_toppings']) : null,
     );
   }
 }
-
 
 extension ProductModelExtension on ProductModel {
   MyFavouriteProductModel toFavorite() {
@@ -90,11 +96,12 @@ extension ProductModelExtension on ProductModel {
       isPopular: isPopular,
       isFeatured: isFeatured,
       avgRating: avgRating,
-      totalReviews: totalReviews
+      totalReviews: totalReviews,
+      showSizes: showSizes,
+      showToppings: showToppings,
     );
   }
 }
-
 
 extension MyFavouriteProductModelExtension on MyFavouriteProductModel {
   ProductModel toProductModel() {
@@ -112,6 +119,8 @@ extension MyFavouriteProductModelExtension on MyFavouriteProductModel {
       isFeatured: isFeatured,
       avgRating: avgRating,
       totalReviews: totalReviews,
+      showSizes: showSizes,
+      showToppings: showToppings,
     );
   }
 }
@@ -127,4 +136,3 @@ int _toInt(dynamic value) {
   if (value is num) return value.toInt();
   return int.tryParse(value.toString()) ?? 0;
 }
-

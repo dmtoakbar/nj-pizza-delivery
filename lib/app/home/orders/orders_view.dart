@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -29,6 +31,11 @@ class OrdersView extends GetView<OrderController> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Header(),
+              ),
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: premiumOfferBanner(),
               ),
               const SizedBox(height: 4),
               Expanded(
@@ -77,5 +84,163 @@ class OrdersView extends GetView<OrderController> {
         bottomNavigationBar: const AnimatedBottomNav(),
       ),
     );
+  }
+
+
+  Widget premiumOfferBanner() {
+    return Obx(() {
+      if (controller.promoSliders.isEmpty) {
+        return const SizedBox();
+      }
+
+      return Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+
+            child: CarouselSlider.builder(
+              itemCount: controller.promoSliders.length,
+
+              options: CarouselOptions(
+                height: 120,
+                viewportFraction: 1,
+                autoPlay: true,
+                enlargeCenterPage: false,
+                autoPlayInterval: const Duration(seconds: 4),
+              ),
+
+              itemBuilder: (_, index, __) {
+                final banner = controller.promoSliders[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    /// OPEN PAGE / PRODUCT / CATEGORY
+                  },
+
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      /// IMAGE
+                      CachedNetworkImage(
+                        imageUrl: banner.image,
+                        fit: BoxFit.cover,
+                      ),
+
+                      /// DARK OVERLAY
+                      Container(color: Colors.black.withOpacity(0.42)),
+
+                      /// ORANGE GRADIENT
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              const Color(0xFFEB5525).withOpacity(0.82),
+                              Colors.black.withOpacity(0.38),
+                            ],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ),
+                        ),
+                      ),
+
+                      /// PREMIUM CIRCLES
+                      Positioned(
+                        top: -30,
+                        right: -20,
+                        child: Container(
+                          height: 120,
+                          width: 120,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withOpacity(0.08),
+                          ),
+                        ),
+                      ),
+
+                      Positioned(
+                        bottom: -40,
+                        left: -20,
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withOpacity(0.06),
+                          ),
+                        ),
+                      ),
+
+                      /// CONTENT
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+
+                          children: [
+                            /// BADGE
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.16),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+
+                              child: const Text(
+                                "SPECIAL OFFER",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 11,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 8),
+
+                            /// TITLE
+                            Text(
+                              banner.title,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                height: 1.1,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: -1,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+
+                            if (banner.subtitle.isNotEmpty) ...[
+                              const SizedBox(height: 10),
+
+                              Text(
+                                banner.subtitle,
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.92),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    });
   }
 }

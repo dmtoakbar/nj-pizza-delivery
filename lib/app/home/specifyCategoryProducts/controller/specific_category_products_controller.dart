@@ -5,12 +5,16 @@ import 'package:nj_pizza_delivery/app/home/specifyCategoryProducts/controller/se
 import '../../../../api/api_path.dart';
 import '../../../../api/config.dart';
 import '../../../../utils/app_toast.dart';
+import '../../home/model/promo_sliders.dart';
 
 class SpecificCategoryProductsController extends GetxController {
   final searchText = ''.obs;
 
   RxBool mainPageLoading = false.obs;
   RxBool moreProductLoading = false.obs;
+  final RxList<PromoSliderModel> promoSliders = <PromoSliderModel>[].obs;
+
+  RxBool promoSliderLoading = false.obs;
 
   RxInt page = 1.obs;
   RxBool hasMore = true.obs;
@@ -35,7 +39,7 @@ class SpecificCategoryProductsController extends GetxController {
     final args = Get.arguments as Map<String, dynamic>;
     categoryId = args['category_id'];
     categoryName = args['category_name'];
-
+    loadPromoSliders();
     loadProduct();
   }
 
@@ -111,6 +115,36 @@ class SpecificCategoryProductsController extends GetxController {
     } finally {
       mainPageLoading.value = false;
       moreProductLoading.value = false;
+    }
+  }
+
+
+  Future<void> loadPromoSliders() async {
+    try {
+      promoSliderLoading.value = true;
+
+      final response = await Config.dio.get('/${ApiPath.promoSliders}');
+
+      if (response.statusCode == 200 &&
+          response.data != null &&
+          response.data['success'] == true) {
+        final data = response.data['data'];
+        debugPrint('promo slider data ====================== $data');
+        if (data is List && data.isNotEmpty) {
+          final sliders =
+          data.map((e) => PromoSliderModel.fromJson(e)).toList();
+
+          promoSliders.assignAll(sliders);
+        } else {
+          promoSliders.clear();
+        }
+      }
+    } catch (e) {
+      print('PROMO SLIDER API ERROR: $e');
+
+      AppToast.error('Failed to load promo sliders');
+    } finally {
+      promoSliderLoading.value = false;
     }
   }
 }

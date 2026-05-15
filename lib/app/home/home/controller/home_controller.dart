@@ -35,11 +35,7 @@ class HomeController extends GetxController {
       await homeBanner();
       await loadPromoSliders();
       await loadCategories();
-
-      if (categories.isNotEmpty) {
-        selectedCategory.value = categories.first.id;
-        await loadProduct();
-      }
+      await loadProduct();
     } catch (e) {
       AppToast.error('Failed to load home data');
     } finally {
@@ -114,7 +110,7 @@ class HomeController extends GetxController {
           response.data != null &&
           response.data['success'] == true) {
         final data = response.data['data'];
-         debugPrint('promo slider data ====================== $data');
+        debugPrint('promo slider data ====================== $data');
         if (data is List && data.isNotEmpty) {
           final sliders =
               data.map((e) => PromoSliderModel.fromJson(e)).toList();
@@ -137,7 +133,7 @@ class HomeController extends GetxController {
     try {
       final response = await Config.dio.get(
         '/${ApiPath.products}',
-        queryParameters: {'category_id': selectedCategory.value, 'popular': 1},
+        queryParameters: {'popular': 1},
       );
 
       if (response.statusCode == 200 && response.data['success'] == true) {
