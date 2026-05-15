@@ -5,7 +5,8 @@ import '../../../../constants/images_files.dart';
 import '../../widgets/voiceToText/voice_to_text.dart';
 
 class SearchWidget extends StatelessWidget {
-  SearchWidget({super.key});
+  final bool home;
+  SearchWidget({super.key, this.home = false});
 
   final controller = Get.put(SearchHomeController());
   @override
@@ -78,12 +79,12 @@ class SearchWidget extends StatelessWidget {
 
         const SizedBox(width: 12),
 
-        _filterSection(),
+        _filterSection(home),
       ],
     );
   }
 
-  Widget _filterSection() {
+  Widget _filterSection(bool home) {
     return GestureDetector(
       onTap: () {
         Get.bottomSheet(
@@ -324,7 +325,7 @@ class SearchWidget extends StatelessWidget {
       child: Image.asset(
         ImagesFiles.filterIcon,
         height: 20,
-        color: Colors.black,
+        color: home ? Colors.white : Colors.black,
       ),
     );
   }

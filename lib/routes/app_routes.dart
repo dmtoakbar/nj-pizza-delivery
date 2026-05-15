@@ -24,9 +24,9 @@ abstract class Routes {
   static const FAQ = _Paths.FAQ;
   static const ABOUTMENU = _Paths.ABOUTMENU;
   static const SPECIFICATPRODUCTS = _Paths.SPECIFICATPRODUCTS;
-  static const ALLCATPRODUCTS = _Paths.ALLCATPRODUCTS;
   static const MYFAVORITE = _Paths.MYFAVORITE;
   static const MAPSEARCHADDRESS = _Paths.MAPSEARCHADDRESS;
+  static const MAINMENU = _Paths.MAINMENU;
 }
 
 abstract class _Paths {
@@ -53,7 +53,7 @@ abstract class _Paths {
   static const FAQ = '/faq';
   static const ABOUTMENU = '/about-menu';
   static const SPECIFICATPRODUCTS = '/specific-cat-products';
-  static const ALLCATPRODUCTS = '/all-cat-products';
   static const MYFAVORITE = '/my-favourite';
   static const MAPSEARCHADDRESS = '/map-search-address';
+  static const MAINMENU = '/main-menu';
 }

@@ -10,13 +10,13 @@ import 'package:nj_pizza_delivery/app/home/aboutMenu/about_menu.dart';
 import 'package:nj_pizza_delivery/app/home/aboutMenu/binding/about_menu_controller_binding.dart';
 import 'package:nj_pizza_delivery/app/home/aboutUs/about_us.dart';
 import 'package:nj_pizza_delivery/app/home/aboutUs/bindings/about_us_controller_bindings.dart';
-import 'package:nj_pizza_delivery/app/home/allCategoryProducts/all_category_products.dart';
-import 'package:nj_pizza_delivery/app/home/allCategoryProducts/binding/all_category_products_controller_binding.dart';
 import 'package:nj_pizza_delivery/app/home/cart/cart.dart';
 import 'package:nj_pizza_delivery/app/home/contactUs/binding/contact_us_controller_binding.dart';
 import 'package:nj_pizza_delivery/app/home/contactUs/contact_us.dart';
 import 'package:nj_pizza_delivery/app/home/home/binding/home_controller_binding.dart';
 import 'package:nj_pizza_delivery/app/home/home/home_view.dart';
+import 'package:nj_pizza_delivery/app/home/mainMenu/binding/menu_controller_binding.dart';
+import 'package:nj_pizza_delivery/app/home/mainMenu/menu_view.dart';
 import 'package:nj_pizza_delivery/app/home/myFavourite/my_favourite.dart';
 import 'package:nj_pizza_delivery/app/home/orders/bindings/order_controller_binding.dart';
 import 'package:nj_pizza_delivery/app/home/orders/orderDetail/order_detail_view.dart';
@@ -90,9 +90,11 @@ class AppPages {
       binding: HomeControllerBinding(),
     ),
     GetPage(
-      name: Routes.MYFAVORITE,
-      page: () => FavoritesScreen(),
+      name: Routes.MAINMENU,
+      page: () => MainMenuView(),
+      binding: MenuControllerBinding(),
     ),
+    GetPage(name: Routes.MYFAVORITE, page: () => FavoritesScreen()),
     GetPage(name: Routes.PROFILE, page: () => ProfileScreen()),
     GetPage(name: Routes.CART, page: () => CartScreen()),
     GetPage(name: Routes.PLACEORDER, page: () => PlaceOrderView()),
@@ -160,16 +162,10 @@ class AppPages {
       page: () => SpecificCategoryProductsScreen(),
       binding: SpecificCategoryProductsControllerBinding(),
     ),
-
     GetPage(
-      name: Routes.ALLCATPRODUCTS,
-      page: () => AllCategoryProductsScreen(),
-      binding: AllCategoryProductsControllerBinding(),
-    ),
-    GetPage(
-        name: Routes.MAPSEARCHADDRESS,
-        page: () => MapSearchScreen(),
-        binding: MapSearchControllerBinding()
+      name: Routes.MAPSEARCHADDRESS,
+      page: () => MapSearchScreen(),
+      binding: MapSearchControllerBinding(),
     ),
   ];
 }

@@ -1,17 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:nj_pizza_delivery/api/search_api.dart';
-import 'package:nj_pizza_delivery/app/home/home/model/product-model.dart';
 import 'package:flutter/material.dart';
+import 'menu_controller.dart';
 
-class AllCategorySearchController extends GetxController {
+class MenuSearchController extends GetxController {
+  final controller = Get.find<MainMenuController>();
+  final isSearching = false.obs;
   CancelToken? _cancelToken;
   int _requestId = 0;
-  final textController = TextEditingController();
-
-  RxList<ProductModel> searchProducts = <ProductModel>[].obs;
 
   final isLoading = false.obs;
+  final textController = TextEditingController();
 
   // ---------------- SEARCH ----------------
   final searchQuery = ''.obs;
@@ -30,10 +30,12 @@ class AllCategorySearchController extends GetxController {
 
   Future<void> search() async {
     if (searchQuery.value.isEmpty) {
-      searchProducts.clear();
+      isSearching.value = false;
+      controller.loadProduct(isRefresh: true);
       return;
     }
 
+    isSearching.value = true;
     isLoading.value = true;
 
     final int currentRequest = ++_requestId;
@@ -41,20 +43,26 @@ class AllCategorySearchController extends GetxController {
     _cancelToken?.cancel();
     _cancelToken = CancelToken();
 
-    final params = {'q': searchQuery.value};
+    final params = {
+      'category_id': controller.selectedCategory.value,
+      'q': searchQuery.value,
+    };
 
     try {
       final data = await SearchApi.search(params, cancelToken: _cancelToken);
 
       // ✅ only apply if this is the latest request
       if (currentRequest == _requestId) {
-        searchProducts
+        controller.products
           ..clear()
           ..addAll(data);
+
+        // ⛔ stop pagination
+        controller.hasMore.value = false;
       }
     } on DioException catch (e) {
       if (!CancelToken.isCancel(e) && currentRequest == _requestId) {
-        searchProducts.clear();
+        controller.products.clear();
       }
     } finally {
       // ✅ only hide loader for latest request

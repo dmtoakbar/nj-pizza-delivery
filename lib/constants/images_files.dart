@@ -34,6 +34,7 @@ class ImagesFiles {
   static const heartIcon = 'assets/heart.png';
   static const taskSquareIcon = 'assets/task-square.png';
   static const profileIcon = 'assets/profile.png';
+  static const mainMenu = 'assets/nife-fork.png';
 
   static const onboardImage = 'assets/onboard-image-removebg-preview.png';
   static const authRightCornerImage = 'assets/auth-right-corner_image-removebg-preview.png';

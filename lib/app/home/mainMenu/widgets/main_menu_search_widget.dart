@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:nj_pizza_delivery/app/home/allCategoryProducts/controller/all_category_products_controller.dart';
 import 'package:get/get.dart';
-import 'package:nj_pizza_delivery/app/home/allCategoryProducts/controller/search_controller.dart';
+import 'package:nj_pizza_delivery/app/home/mainMenu/controller/menu_controller.dart';
+import 'package:nj_pizza_delivery/app/home/mainMenu/controller/menu_search_controller.dart';
+import 'package:nj_pizza_delivery/app/home/specifyCategoryProducts/controller/search_controller.dart';
+import 'package:nj_pizza_delivery/app/home/specifyCategoryProducts/controller/specific_category_products_controller.dart';
 import '../../../../constants/images_files.dart';
 import '../../widgets/voiceToText/voice_to_text.dart';
 
-class AllCategorySearchWidget extends StatelessWidget {
-  AllCategorySearchWidget({super.key});
-  final controller = Get.find<AllCategoryProductsController>();
-  final searchController = Get.find<AllCategorySearchController>();
+class MainMenuSearchWidget extends StatelessWidget {
+  MainMenuSearchWidget({super.key});
+
+  final controller = Get.find<MainMenuController>();
+  final searchController = Get.find<MenuSearchController>();
   @override
   Widget build(BuildContext context) {
     return _searchBar();
@@ -16,7 +19,7 @@ class AllCategorySearchWidget extends StatelessWidget {
 
   Widget _searchBar() {
     return Obx(() {
-      if (controller.loading.value) {
+      if (controller.initialDataLoading.value) {
         return SizedBox.shrink();
       }
       return Padding(

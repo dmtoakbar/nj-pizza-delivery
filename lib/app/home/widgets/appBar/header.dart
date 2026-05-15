@@ -12,7 +12,8 @@ import '../../notification/notification_panel.dart';
 import '../../profile/controller/profile_controller.dart';
 
 class Header extends StatelessWidget {
-  const Header({super.key});
+  final bool home;
+  const Header({super.key, this.home = false});
   @override
   Widget build(BuildContext context) {
     final cart = Get.find<CartController>();
@@ -45,7 +46,11 @@ class Header extends StatelessWidget {
                     onTap: () {
                       Scaffold.of(context).openDrawer(); // 💥 Opens Drawer
                     },
-                    child: Icon(Icons.menu, size: 36, color: Colors.black),
+                    child: Icon(
+                      Icons.menu,
+                      size: 36,
+                      color: home ? Colors.white : Colors.black,
+                    ),
                   ),
             ),
           ),
@@ -63,7 +68,7 @@ class Header extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: Colors.black,
+                color: home ? Colors.white : Colors.black,
               ),
             ),
           if (isLoggedIn.value)
@@ -77,7 +82,7 @@ class Header extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black,
+                    color: home ? Colors.white : Colors.black,
                   ),
                 ),
                 SizedBox(height: 2),
@@ -93,7 +98,10 @@ class Header extends StatelessWidget {
                       formatAddress(profile.address.value),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: home ? Colors.white54 : Colors.grey,
+                      ),
                     ),
                   ],
                 ),
@@ -124,7 +132,7 @@ class Header extends StatelessWidget {
                         Image.asset(
                           ImagesFiles.shoppingBag,
                           height: 23,
-                          color: Colors.black,
+                          color: home ? Colors.white : Colors.black,
                         ),
 
                         /// 🔴 CART COUNT
@@ -133,14 +141,14 @@ class Header extends StatelessWidget {
                           right: -4,
                           child: Container(
                             padding: const EdgeInsets.all(5),
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFEB5525),
+                            decoration: BoxDecoration(
+                              color: home ? Colors.white : Color(0xFFEB5525),
                               shape: BoxShape.circle,
                             ),
                             child: Text(
                               count > 99 ? '99+' : '$count',
                               style: GoogleFonts.poppins(
-                                color: Colors.white,
+                                color: home ? Colors.black : Colors.white,
                                 fontSize: 8,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -154,14 +162,14 @@ class Header extends StatelessWidget {
               }),
             ],
           ),
-          _notificationIcon(),
+          _notificationIcon(home),
         ],
       ),
     );
   }
 }
 
-Widget _notificationIcon() {
+Widget _notificationIcon(bool home) {
   final controller = Get.find<NotificationController>();
 
   return Obx(() {
@@ -172,7 +180,11 @@ Widget _notificationIcon() {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 8.0, top: 1),
-            child: Icon(Icons.notifications_none, size: 24),
+            child: Icon(
+              Icons.notifications_none,
+              size: 24,
+              color: home ? Colors.white : Colors.black,
+            ),
           ),
           if (controller.unreadCount.value > 0)
             Positioned(
@@ -181,14 +193,17 @@ Widget _notificationIcon() {
               child: Container(
                 padding: EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Color(0xFFEB5525),
+                  color: home ? Colors.white : Color(0xFFEB5525),
                   shape: BoxShape.circle,
                 ),
                 child: Text(
                   controller.unreadCount.value > 99
                       ? '99+'
                       : controller.unreadCount.value.toString(),
-                  style: TextStyle(color: Colors.white, fontSize: 8),
+                  style: TextStyle(
+                    color: home ? Colors.black : Colors.white,
+                    fontSize: 8,
+                  ),
                 ),
               ),
             ),

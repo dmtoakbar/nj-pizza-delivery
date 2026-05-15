@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:nj_pizza_delivery/app/home/home/model/categories_model.dart';
 import 'package:nj_pizza_delivery/app/home/home/model/home_banner.dart';
@@ -5,9 +6,13 @@ import 'package:nj_pizza_delivery/app/home/home/model/product-model.dart';
 import 'package:nj_pizza_delivery/utils/app_toast.dart';
 import '../../../../api/api_path.dart';
 import '../../../../api/config.dart';
+import '../model/promo_sliders.dart';
 
 class HomeController extends GetxController {
   final RxList<HomeBannerModel> homeBannerList = <HomeBannerModel>[].obs;
+  final RxList<PromoSliderModel> promoSliders = <PromoSliderModel>[].obs;
+
+  RxBool promoSliderLoading = false.obs;
   final selectedCategory = ''.obs;
   RxBool categoryFilterProductLoading = false.obs;
 
@@ -28,6 +33,7 @@ class HomeController extends GetxController {
       isMainPageLoading.value = true;
 
       await homeBanner();
+      await loadPromoSliders();
       await loadCategories();
 
       if (categories.isNotEmpty) {
@@ -95,6 +101,35 @@ class HomeController extends GetxController {
     } catch (e) {
       print('CATEGORY API ERROR: $e');
       AppToast.error('Failed loading category list');
+    }
+  }
+
+  Future<void> loadPromoSliders() async {
+    try {
+      promoSliderLoading.value = true;
+
+      final response = await Config.dio.get('/${ApiPath.promoSliders}');
+
+      if (response.statusCode == 200 &&
+          response.data != null &&
+          response.data['success'] == true) {
+        final data = response.data['data'];
+         debugPrint('promo slider data ====================== $data');
+        if (data is List && data.isNotEmpty) {
+          final sliders =
+              data.map((e) => PromoSliderModel.fromJson(e)).toList();
+
+          promoSliders.assignAll(sliders);
+        } else {
+          promoSliders.clear();
+        }
+      }
+    } catch (e) {
+      print('PROMO SLIDER API ERROR: $e');
+
+      AppToast.error('Failed to load promo sliders');
+    } finally {
+      promoSliderLoading.value = false;
     }
   }
 
